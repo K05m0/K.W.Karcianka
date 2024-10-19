@@ -29,6 +29,7 @@ public class PlayerCard : CardObject
     {
         // Przeciąganie karty
         transform.position = GetMouseWorldPos() + offset;
+        // RayCast na Grida / przełączenie boola w nim zmienienie wyglądu grida
     }
 
     void OnMouseUp()
