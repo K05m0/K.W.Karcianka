@@ -34,15 +34,6 @@ public class PlayerManager : MonoBehaviour
         StartDraw();
         ResetMana();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            DrawRandomCard();
-            IncreaseMana();
-            ResetMana();
-        }
-    }
     public void StartGame()
     {
         StartDraw();

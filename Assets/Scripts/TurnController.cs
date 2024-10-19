@@ -4,9 +4,10 @@ using UnityEngine;
 public class TurnController : MonoBehaviour
 {
     public EnemyController enemyController; // Referencja do kontrolera przeciwników
+    public PlayerManager playerManager;
     private int turnNumber = 1; // Numer aktualnej tury
-    private enum TurnPhase { EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd }
-    private TurnPhase currentPhase = TurnPhase.EnemyPrepare;
+    private enum TurnPhase { StartTurn, EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd }
+    private TurnPhase currentPhase = TurnPhase.StartTurn;
 
     private void Start()
     {
@@ -19,6 +20,16 @@ public class TurnController : MonoBehaviour
         {
             switch (currentPhase)
             {
+                case TurnPhase.StartTurn:
+                    Debug.Log($"Turn {turnNumber}: start phase");
+                    currentPhase = TurnPhase.EnemyPrepare;
+                    if (turnNumber == 1)
+                        break;
+                    playerManager.DrawRandomCard();
+                    playerManager.IncreaseMana();
+                    playerManager.ResetMana();
+                    break;
+
                 case TurnPhase.EnemyPrepare:
                     Debug.Log($"Turn {turnNumber}: EnemyPrepare phase");
                     enemyController.PrepareNextWave(turnNumber); // Przygotowanie kolejnej fali
@@ -40,7 +51,7 @@ public class TurnController : MonoBehaviour
 
                 case TurnPhase.PlayerTurn:
                     Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
-                    // Czekamy na ruch gracza (np. ustawienie jednostek)
+
                     yield return new WaitUntil(() => PlayerFinishedTurn());
                     currentPhase = TurnPhase.TurnEnd;
                     break;
@@ -48,7 +59,7 @@ public class TurnController : MonoBehaviour
                 case TurnPhase.TurnEnd:
                     Debug.Log($"Turn {turnNumber}: TurnEnd phase");
                     turnNumber++;
-                    currentPhase = TurnPhase.EnemyPrepare;
+                    currentPhase = TurnPhase.StartTurn;
                     break;
             }
 
