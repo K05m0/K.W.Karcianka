@@ -3,11 +3,12 @@
 [System.Serializable]
 public class WaveConfig
 {
-    public string waveName; // Nazwa fali
-    public List<EnemyTypeCount> enemiesToSpawn; // Lista typów przeciwników i ich liczba
-    public int turnToPrepare; // W której turze powinna być przygotowana ta fala
-    public bool spawnImmediately; // Czy jednostki mają pojawić się od razu w tej turze?
+    public string waveName;
+    public List<EnemyTypeCount> enemiesToSpawn;
+    public int turnToPrepare;
+    public bool spawnImmediately;
     public bool SpawnNow;
+    public bool IsWaveComplete = false; // Flaga informująca, czy fala jest zakończona
 
     public WaveConfig(string waveName, List<EnemyTypeCount> enemiesToSpawn, int turnToPrepare, bool spawnImmediately)
     {

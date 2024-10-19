@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class CardObject : MonoBehaviour
+public abstract class CardObject : MonoBehaviour
 {
     public Card CardData;
 
 
 
-    public void SetUpCard(Card selectedCard)
+    public virtual void SetUpCard(Card selectedCard)
     {
         CardData = selectedCard;
     }

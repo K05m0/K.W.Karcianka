@@ -7,7 +7,7 @@ public class EnemyCard : CardObject
 
     private GridManager gridManager; // Odwołanie do managera gridu
 
-    void Start()
+    void Awake()
     {
         // Zakładamy, że gridManager jest w tej samej scenie
         gridManager = FindObjectOfType<GridManager>();
@@ -40,11 +40,5 @@ public class EnemyCard : CardObject
         int newY = currentY + deltaY;
 
         PlaceOnGrid(newX, newY);
-    }
-
-    // Metoda do wyświetlania kart przygotowujących się
-    public void ShowPreparingPosition(Vector3 position)
-    {
-        transform.position = position; // Ustawia pozycję do pokazania karty przygotowującej
     }
 }

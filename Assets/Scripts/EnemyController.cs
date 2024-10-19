@@ -1,8 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Mathematics;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public List<PreparePosition> positionToPrepare;
+    [SerializeField] private EnemyCard CardPrefab;
+
     [SerializeField] private List<WaveConfig> waves; // Lista fal konfigurowana z poziomu inspektora
 
     private int currentWaveIndex = 0; // Indeks obecnej fali
@@ -10,7 +17,7 @@ public class EnemyController : MonoBehaviour
     private bool spawnInNextTurn = false; // Flaga określająca, czy jednostki mają pojawić się w następnej turze
 
     public List<Card> PreperedCard = new List<Card>();
-    public List<Card> PlacedCard = new List<Card>();
+    public List<EnemyCard> PlacedCard = new List<EnemyCard>();
 
     private void Awake()
     {
@@ -18,11 +25,11 @@ public class EnemyController : MonoBehaviour
         Card enemy2 = new Card("enemy2", 0);
 
         EnemyTypeCount type1inWave1 = new EnemyTypeCount(enemy1, 1);
-        WaveConfig wave1 = new WaveConfig("wave1", new List<EnemyTypeCount>() { type1inWave1 }, 1, true); // 1 tura na przygotowanie
+        WaveConfig wave1 = new WaveConfig("wave1", new List<EnemyTypeCount>() { type1inWave1 }, 1, false); // 1 tura na przygotowanie
 
         EnemyTypeCount type1inWave2 = new EnemyTypeCount(enemy1, 2);
         EnemyTypeCount type2inWave2 = new EnemyTypeCount(enemy2, 1);
-        WaveConfig wave2 = new WaveConfig("wave2", new List<EnemyTypeCount>() { type1inWave2, type2inWave2 }, 8, true); // 3 tura na przygotowanie
+        WaveConfig wave2 = new WaveConfig("wave2", new List<EnemyTypeCount>() { type1inWave2, type2inWave2 }, 3, false); // 3 tura na przygotowanie
 
         waves = new List<WaveConfig> { wave1, wave2 };
     }
@@ -40,6 +47,7 @@ public class EnemyController : MonoBehaviour
                 {
                     Card newIstance = new Card(enemyConfig.enemyType.CardName, enemyConfig.enemyType.CardCost);
                     ModifyPreperedCard(new List<Card> { newIstance }, true);
+
                 }
             }
 
@@ -54,25 +62,24 @@ public class EnemyController : MonoBehaviour
     public void SpawnPreparedCards()
     {
         ModifyPlacedCard(PreperedCard, true); // Przenosimy przygotowane karty na planszę
-        PreperedCard.Clear(); // Opróżniamy listę przygotowanych kart
-        spawnInNextTurn = false; // Resetujemy flagę, bo jednostki zostały już umieszczone
+        ModifyPreperedCard(PreperedCard, false);// spawnInNextTurn = false; // Resetujemy flagę, bo jednostki zostały już umieszczone
         indexWavetoSpawner++;
     }
 
     public void DecreaseTurnCounter(int currentTurn)
     {
-        if(IndexExists(waves, indexWavetoSpawner))
+        if (IndexExists(waves, indexWavetoSpawner))
 
-        // Sprawdzamy, czy powinniśmy spawnować jednostki w tej turze
-        if (waves[indexWavetoSpawner].SpawnNow)
-        {
-            if (!waves[indexWavetoSpawner].spawnImmediately)
-                SpawnPreparedCards();
-        }
-        else
-        {
-            waves[indexWavetoSpawner].SpawnNow = true;
-        }
+            // Sprawdzamy, czy powinniśmy spawnować jednostki w tej turze
+            if (waves[indexWavetoSpawner].SpawnNow)
+            {
+                if (!waves[indexWavetoSpawner].spawnImmediately)
+                    SpawnPreparedCards();
+            }
+            else
+            {
+                waves[indexWavetoSpawner].SpawnNow = true;
+            }
 
         // Sprawdzamy, czy powinniśmy przejść do następnej fali
         if (currentWaveIndex < waves.Count - 1)
@@ -83,36 +90,120 @@ public class EnemyController : MonoBehaviour
 
     public void ModifyPreperedCard(List<Card> cardToAdd, bool isAdd)
     {
-        foreach (Card card in cardToAdd)
+        // Jeśli dodajemy karty
+        if (isAdd)
         {
-            if (isAdd && !PreperedCard.Contains(card))
+            foreach (Card card in cardToAdd)
             {
-                PreperedCard.Add(card);
+                if (!PreperedCard.Contains(card))
+                {
+                    // Znajdź wszystkie dostępne pozycje, które nie są jeszcze zajęte
+                    var availablePositions = positionToPrepare
+                                              .Where(pos => pos.selectedCard == null)
+                                              .ToList();
+
+                    if (availablePositions.Count == 0)
+                    {
+                        Debug.LogWarning("Brak dostępnych pozycji do umieszczenia karty.");
+                        return; // Wyjście, jeśli nie ma dostępnych miejsc
+                    }
+
+                    // Wybieramy losową dostępną pozycję
+                    var randomPos = UnityEngine.Random.Range(0, availablePositions.Count);
+                    var selectedPosition = availablePositions[randomPos];
+
+                    // Dodajemy kartę do listy przygotowanych i instancjujemy ją na wybranej pozycji
+                    PreperedCard.Add(card);
+                    EnemyCard cardObject = Instantiate(CardPrefab, selectedPosition.spawnPosition);
+                    cardObject.SetUpCard(card);
+
+                    // Oznaczamy tę pozycję jako zajętą, przypisując jej kartę
+                    selectedPosition.selectedCard = cardObject;
+                }
             }
-            else if (!isAdd && PreperedCard.Contains(card))
+        }
+        // Jeśli usuwamy karty
+        else
+        {
+            List<Card> cardsToRemove = new List<Card>();
+
+            foreach (Card card in cardToAdd)
+            {
+                if (PreperedCard.Contains(card))
+                {
+                    foreach (var pos in positionToPrepare)
+                    {
+                        if (pos?.selectedCard?.CardData == card)
+                        {
+                            Destroy(pos.selectedCard.gameObject); // Usuwamy obiekt karty
+                            pos.selectedCard = null; // Zwalniamy pozycję
+                            cardsToRemove.Add(card);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Usuwamy karty po zakończeniu iteracji
+            foreach (Card card in cardsToRemove)
             {
                 PreperedCard.Remove(card);
             }
         }
     }
 
+
     public void ModifyPlacedCard(List<Card> cardToAdd, bool isAdd)
     {
-        foreach (Card card in cardToAdd)
+        foreach (var card in cardToAdd)
         {
-            if (isAdd && !PlacedCard.Contains(card))
+            // Dodawanie kart
+            if (isAdd && !PlacedCard.Any(x => x.CardData == card))
             {
-                PlacedCard.Add(card);
+                EnemyCard cardObject = Instantiate(CardPrefab);
+                cardObject.SetUpCard(card);
+
+                // Znalezienie indeksu pozycji, na którą karta ma być ustawiona
+                var index = positionToPrepare
+                    .Where(x => x.selectedCard != null && x.selectedCard.CardData == card)
+                    .Select(x => positionToPrepare.IndexOf(x))
+                    .FirstOrDefault();
+
+                cardObject.PlaceOnGrid(index, 4);
+                PlacedCard.Add(cardObject);
             }
-            else if (!isAdd && PlacedCard.Contains(card))
+            // Usuwanie kart
+            else if (!isAdd && PlacedCard.Any(x => x.CardData == card))
             {
-                PlacedCard.Remove(card);
+                // Lista kart do usunięcia
+                List<EnemyCard> cardsToRemove = new List<EnemyCard>();
+
+                foreach (var placedCard in PlacedCard.Where(x => x.CardData == card))
+                {
+                    // Usunięcie obiektu karty z gry (zniszczenie obiektu)
+                    Destroy(placedCard.gameObject);
+                    cardsToRemove.Add(placedCard); // Zbieramy karty do usunięcia
+                }
+
+                // Usunięcie kart z listy PlacedCard
+                foreach (var cardToRemove in cardsToRemove)
+                {
+                    PlacedCard.Remove(cardToRemove);
+                }
             }
         }
+
     }
 
     private bool IndexExists<T>(List<T> list, int index)
     {
         return index >= 0 && index < list.Count; // Sprawdzanie, czy indeks jest w poprawnym zakresie
     }
+}
+
+[System.Serializable]
+public class PreparePosition
+{
+    public Transform spawnPosition;
+    public EnemyCard selectedCard;
 }
