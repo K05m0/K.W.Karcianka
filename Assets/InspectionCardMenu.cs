@@ -38,6 +38,7 @@ public class InspectionCardMenu : MonoBehaviour
 
     public void HideWindow()
     {
+        Debug.Log("????");
         window.DOMoveX(-520f, 3f, false).SetEase(Ease.Unset);
     }
     public void ShowWindow()
