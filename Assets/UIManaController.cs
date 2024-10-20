@@ -10,7 +10,7 @@ public class UIManaController : MonoBehaviour
     private int maxCoins;
     private int currentCoins;
     
-    void Start()
+    void Awake()
     {
         ManaInfromationEvent.current.onManaChange += onManaChange;
         manaText = GetComponent<TextMeshProUGUI>();
@@ -23,6 +23,7 @@ public class UIManaController : MonoBehaviour
         {
             currentCoins = maxMana;
             maxCoins = maxMana;
+            manaText.text = maxMana + "/" + maxMana;
             for (int i = 0; i < maxMana; i++)
             {
                 coinList[i].gameObject.SetActive(true);

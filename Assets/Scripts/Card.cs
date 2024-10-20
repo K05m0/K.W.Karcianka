@@ -1,4 +1,5 @@
-﻿using System;
+using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,6 +18,9 @@ public class Card : MonoBehaviour
     [HideInInspector] private CardObject cardObject;
     [HideInInspector] private GridManager gridManager;
     public static event EventHandler<CardDeathEventArgs> OnCardDeath;
+    
+    public Sprite cardSprite;
+    public string description;
 
     private void Awake()
     {
