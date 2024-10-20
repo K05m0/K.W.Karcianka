@@ -61,22 +61,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: -0.92
+    - _Alpha: 0.85
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _Bot_Fallof: 1.71
-    - _Bot_Noise_Power: -1.21
-    - _Bot_Noise_Scale: 40
+    - _Bot_Fallof: 1.3
+    - _Bot_Noise_Power: -2.4
+    - _Bot_Noise_Scale: 11.22
     - _CastShadows: 1
     - _Cull: 0
     - _DstBlend: 10
     - _End_Fallof: 1.42
-    - _Fog_Brightness: 5.9
+    - _Fog_Brightness: 30.48
     - _Fog_Color: 23.84
     - _Fog_Strenght: 0.49
-    - _Fog_Strenght_0_5: -0.37
+    - _Fog_Strenght_0_5: 29.36
     - _Left_Fallof: 0.7
     - _Left_Noise_Power: 0.94
     - _Left_Noise_Scale: 50
@@ -91,8 +91,8 @@ Material:
     - _SrcBlend: 1
     - _Start_Fallof: 0.5
     - _Surface: 1
-    - _Top_Fallof: 2.76
-    - _Top_Noise_Power: 0.62
+    - _Top_Fallof: 2.8
+    - _Top_Noise_Power: 8.35
     - _Top_Noise_Scale: 40
     - _WorkflowMode: 1
     - _ZTest: 4
@@ -100,7 +100,7 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _Bot_Noise_Speed: {r: 0.009, g: 0, b: 0, a: 0}
-    - _Color: {r: 10.367655, g: 13.394789, b: 18.164816, a: 1}
+    - _Color: {r: 0.001117284, g: 0, b: 0.00069025933, a: 0}
     - _Color_1: {r: 2.2706025, g: 2.2706025, b: 2.2706025, a: 0}
     - _Color_2: {r: 0.4941687, g: 0.4941687, b: 0.4941687, a: 0}
     - _Left_Noise_Speed: {r: -0.009, g: 0, b: 0, a: 0}
