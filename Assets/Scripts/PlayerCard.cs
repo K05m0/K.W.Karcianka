@@ -81,6 +81,7 @@ public class PlayerCard : CardObject
 
                 // Oznacz komórkę jako zajętą
                 nearestCell.isOccupied = true;
+                nearestCell.CardInCell = CardData;
             }
             else
             {
@@ -98,36 +99,6 @@ public class PlayerCard : CardObject
     }
 
     // Metoda do umieszczania karty w danej komórce gridu
-    private void PlaceOnGrid(int x, int y)
-    {
-        GridCell targetCell = gridManager.GetCell(x, y);
-
-        if (targetCell != null && !targetCell.isOccupied)
-        {
-            transform.position = targetCell.transform.position;
-            targetCell.isOccupied = true;
-        }
-        else
-        {
-            transform.position = originalPosition; // Jeśli nie można umieścić, wróć do oryginalnej pozycji
-        }
-    }
-
-    public void MoveOnGrid(int deltaX, int deltaY)
-    {
-        // Oblicz aktualne współrzędne w siatce
-        int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
-        int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
-
-        // Oblicz nowe współrzędne
-        int newX = currentX + deltaX;
-        int newY = currentY + deltaY;
-
-        // Przemieszczanie na nową pozycję w gridzie
-        PlaceOnGrid(newX, newY);
-    }
-
-
     private Vector3 GetMouseWorldPos()
     {
         Vector3 mousePoint = Input.mousePosition;
@@ -140,11 +111,30 @@ public class PlayerCard : CardObject
         if (playerManager.UseMana(usedCard.CardCost))
         {
             playerManager.UseSlot(usedCard);
+
+            usedCard.OnSpawn();
             return true;
         }
         else
         {
             return false;
+        }
+    }
+
+    public override void PlaceOnGrid(int x, int y)
+    {
+        GridCell targetCell = gridManager.GetCell(x, y);
+
+        if (targetCell != null && !targetCell.isOccupied)
+        {
+            transform.position = targetCell.transform.position;
+            targetCell.isOccupied = true;
+            targetCell.CardInCell = CardData;
+
+        }
+        else
+        {
+            transform.position = originalPosition; // Jeśli nie można umieścić, wróć do oryginalnej pozycji
         }
     }
 }

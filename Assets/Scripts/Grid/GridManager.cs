@@ -142,4 +142,36 @@ public class GridManager : MonoBehaviour
 
         return gridCells[x, y]; // Zwróć odpowiednią komórkę
     }
+
+    // Metoda sprawdzająca, czy komórka o współrzędnych x i y jest pusta
+    public bool IsCellEmpty(int x, int y)
+    {
+        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
+        {
+            Debug.LogWarning("Requested cell is out of bounds.");
+            return false; // Zwróć false, jeśli współrzędne są poza zakresem
+        }
+
+        if (!gridCells[x, y].isOccupied)
+            return true;
+        else
+            return false; // Zwraca true, jeśli komórka jest pusta (null)
+    }
+
+    public Card GetCardFromGrid(int x, int y)
+    {
+        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
+        {
+            Debug.LogWarning("Requested cell is out of bounds.");
+            return null; // Zwróć false, jeśli współrzędne są poza zakresem
+        }
+
+        if(gridCells[x, y].CardInCell == null)
+        {
+            Debug.Log("Requested cell is empty");
+            return null;
+        }
+
+        return gridCells[x, y].CardInCell;
+    }
 }

@@ -6,7 +6,7 @@ public class TurnController : MonoBehaviour
     public EnemyController enemyController; // Referencja do kontrolera przeciwników
     public PlayerManager playerManager;
     private int turnNumber = 1; // Numer aktualnej tury
-    private enum TurnPhase { StartTurn, EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd }
+    private enum TurnPhase { StartTurn, EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd, PlayerAction }
     private TurnPhase currentPhase = TurnPhase.StartTurn;
 
     private void Start()
@@ -20,9 +20,11 @@ public class TurnController : MonoBehaviour
         {
             switch (currentPhase)
             {
+
+
                 case TurnPhase.StartTurn:
                     Debug.Log($"Turn {turnNumber}: start phase");
-                    currentPhase = TurnPhase.EnemyPrepare;
+                    currentPhase = TurnPhase.EnemyAction;
                     if (turnNumber == 1)
                     {
                         playerManager.StartGame();
@@ -31,6 +33,15 @@ public class TurnController : MonoBehaviour
                     playerManager.DrawRandomCard();
                     playerManager.IncreaseMana();
                     playerManager.ResetMana();
+                    break;
+
+                case TurnPhase.EnemyAction:
+                    Debug.Log($"Turn {turnNumber}: EnemyAction phase");
+                    foreach (var enemy in enemyController.PlacedCard)
+                    {
+                        enemy.CardData.MakeCardTurn();
+                    }
+                    currentPhase = TurnPhase.EnemyPrepare;
                     break;
 
                 case TurnPhase.EnemyPrepare:
@@ -44,13 +55,15 @@ public class TurnController : MonoBehaviour
                     Debug.Log($"Turn {turnNumber}: EnemySpawn phase");
                     if (enemyController != null)
                         enemyController.DecreaseTurnCounter(turnNumber); // Sprawdzamy, czy jednostki mają być spawnowane
-                    currentPhase = TurnPhase.EnemyAction;
+                    currentPhase = TurnPhase.PlayerAction;
                     break;
 
-                case TurnPhase.EnemyAction:
-                    Debug.Log($"Turn {turnNumber}: EnemyAction phase");
-                    // Tu możesz dodać ruchy i akcje przeciwników
-                    yield return new WaitForSeconds(2f); // Przykładowy delay na wykonanie akcji
+                case TurnPhase.PlayerAction:
+                    Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
+                    foreach (var playerCard in playerManager.PlacedCard)
+                    {
+                        playerCard.MakeCardTurn();
+                    }
                     currentPhase = TurnPhase.PlayerTurn;
                     break;
 

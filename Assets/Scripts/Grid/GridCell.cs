@@ -7,6 +7,7 @@ public class GridCell : MonoBehaviour
     public Vector2Int coordinates;  // Koordynaty (x, y) komórki
     public bool isOccupied = false; // Czy komórka jest zajęta czy nie
     public bool isTargeted = false; //Czy jest nad nia myszka
+    public Card CardInCell = null;
 
 
     private SpriteRenderer spriteRenderer;

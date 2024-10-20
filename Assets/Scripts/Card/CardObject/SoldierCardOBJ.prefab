@@ -124,3 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardName: Soldier
   CardCost: 2
+  moveSpeed: {x: 0, y: -1}
+  CurrHp: 0
+  MaxHp: 0
+  AttackDmg: 0

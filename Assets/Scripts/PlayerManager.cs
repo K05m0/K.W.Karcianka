@@ -46,6 +46,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     Card card = Instantiate(randCard, CardSlots[i]);
                     PlayerCard cardObject = card.AddComponent<PlayerCard>();
+                    card.SetUpCard(cardObject);
 
                     cardObject.SetUpCard(card);
                     cardObject.gameObject.name = cardObject.name;

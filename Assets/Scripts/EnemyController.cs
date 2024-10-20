@@ -109,10 +109,14 @@ public class EnemyController : MonoBehaviour
                     var selectedPosition = availablePositions[randomPos];
 
                     // Dodajemy kartę do listy przygotowanych i instancjujemy ją na wybranej pozycji
+
                     Card cardIstance = Instantiate(card, selectedPosition.spawnPosition);
                     EnemyCard cardObject = cardIstance.AddComponent<EnemyCard>();
+                    cardIstance.SetUpCard(cardObject);
                     cardObject.SetUpCard(cardIstance);
                     selectedPosition.selectedCard = cardObject;
+
+                    cardIstance.OnSpawn();
 
                     PreperedCard.Add(cardIstance);
 
@@ -159,6 +163,7 @@ public class EnemyController : MonoBehaviour
             {
                 Card cardIstance = Instantiate(card);
                 EnemyCard cardObject = cardIstance.AddComponent<EnemyCard>();
+                cardIstance.SetUpCard(cardObject);
                 cardObject.SetUpCard(cardIstance);
 
                 // Znalezienie indeksu pozycji, na którą karta ma być ustawiona

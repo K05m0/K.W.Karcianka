@@ -124,3 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardName: Dog
   CardCost: 1
+  moveSpeed: {x: 0, y: -2}
+  CurrHp: 0
+  MaxHp: 2
+  AttackDmg: 1
