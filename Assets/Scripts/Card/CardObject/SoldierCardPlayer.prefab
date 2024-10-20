@@ -122,9 +122,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 772749b5ecafe294ea4900ae28f8da15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 1
   CardName: Soldier
   CardCost: 2
-  moveSpeed: {x: 0, y: 1}
+  moveSpeed: {x: 0, y: 2}
   CurrHp: 0
   MaxHp: 4
   AttackDmg: 1
