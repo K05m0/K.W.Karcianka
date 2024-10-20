@@ -21,6 +21,10 @@ public class EnemyCard : CardObject
         if (targetCell != null && !targetCell.isOccupied)
         {
             transform.position = targetCell.transform.position;
+            transform.SetParent(targetCell.transform, false);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
             targetCell.isOccupied = true;
             currentState = CardState.Created; // Zmiana stanu na "stworzone"
         }
