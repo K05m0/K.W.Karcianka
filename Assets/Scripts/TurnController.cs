@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class TurnController : MonoBehaviour
@@ -39,7 +40,7 @@ public class TurnController : MonoBehaviour
                     Debug.Log($"Turn {turnNumber}: EnemyAction phase");
                     for (int i = enemyController.PlacedCard.Count - 1; i >= 0; i--)
                     {
-                        yield return new WaitForSeconds(2f);
+                        yield return new WaitForSeconds(0.5f);
                         enemyController.PlacedCard[i].CardData.MakeCardTurn();
                     }
 
@@ -64,7 +65,7 @@ public class TurnController : MonoBehaviour
                     Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
                     for (int i = playerManager.PlacedCard.Count - 1; i >= 0; i--)
                     {
-                        yield return new WaitForSeconds(2f);
+                        yield return new WaitForSeconds(0.5f);
                         playerManager.PlacedCard[i].MakeCardTurn();
                     }
 
@@ -94,5 +95,14 @@ public class TurnController : MonoBehaviour
     {
         // Można tutaj dodać logikę końca tury gracza, np. naciśnięcie przycisku
         return Input.GetKeyDown(KeyCode.Space); // Przykładowo naciśnięcie spacji kończy turę gracza
+    }
+}
+public class CardDeathEventArgs : EventArgs
+{
+    public Card DeadCard { get; private set; }
+
+    public CardDeathEventArgs(Card deadCard)
+    {
+        DeadCard = deadCard;
     }
 }

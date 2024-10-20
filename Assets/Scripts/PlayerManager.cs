@@ -21,6 +21,23 @@ public class PlayerManager : MonoBehaviour
     [Header("Placed Card")]
     public List<Card> PlacedCard = new List<Card>();
 
+    private void OnEnable()
+    {
+        Card.OnCardDeath += HandleCardDeath;
+    }
+
+    private void OnDisable()
+    {
+        Card.OnCardDeath -= HandleCardDeath;
+    }
+
+    private void HandleCardDeath(object sender, CardDeathEventArgs e)
+    {
+        // Obsługa zdarzenia - np. usunięcie karty z listy PlacedCard
+        ModifyPlacedCard(e.DeadCard, false, false);
+        Debug.Log("Karta zmarła: " + e.DeadCard);
+    }
+
     public void StartGame()
     {
         CardInHand = new Card[CardSlots.Count];
@@ -88,7 +105,11 @@ public class PlayerManager : MonoBehaviour
                 PlacedCard.Add(usedCard);
                 return;
             }
-
+            if(PlacedCard.Contains(usedCard))
+            {
+                Debug.Log("this card is placed");
+                return;
+            }
             PlacedCard.Add(usedCard);
             return;
         }
@@ -96,7 +117,6 @@ public class PlayerManager : MonoBehaviour
         {
             if (!PlacedCard.Contains(usedCard))
             {
-                Debug.LogError("this card not exits in list");
                 return;
             }
             PlacedCard.Remove(usedCard);
@@ -135,11 +155,6 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("To Low Mana");
             return false;
         }
-    }
-
-    private void Update()
-    {
-        Debug.Log(CurrMana);
     }
 }
 

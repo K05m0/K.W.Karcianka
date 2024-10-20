@@ -21,6 +21,23 @@ public class EnemyController : MonoBehaviour
 
     private GridManager gridManager;
 
+    private void OnEnable()
+    {
+        Card.OnCardDeath += HandleCardDeath;
+    }
+
+    private void OnDisable()
+    {
+        Card.OnCardDeath -= HandleCardDeath;
+    }
+
+    private void HandleCardDeath(object sender, CardDeathEventArgs e)
+    {
+        // Obsługa zdarzenia - np. usunięcie karty z listy PlacedCard
+        ModifyPlacedCard(new List<Card>() { e.DeadCard }, false);
+        Debug.Log("Karta zmarła: " + e.DeadCard);
+    }
+
     private void Awake()
     {
         gridManager = FindAnyObjectByType<GridManager>();

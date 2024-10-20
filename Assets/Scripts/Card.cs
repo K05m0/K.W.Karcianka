@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [System.Serializable]
 public class Card : MonoBehaviour
@@ -15,6 +16,7 @@ public class Card : MonoBehaviour
 
     [HideInInspector] private CardObject cardObject;
     [HideInInspector] private GridManager gridManager;
+    public static event EventHandler<CardDeathEventArgs> OnCardDeath;
 
     private void Awake()
     {
@@ -62,6 +64,7 @@ public class Card : MonoBehaviour
         gridManager.GetCell(currentX,currentY).CardInCell = null;
         gridManager.GetCell(currentX, currentY).isOccupied = false;
 
+        OnCardDeath?.Invoke(this, new CardDeathEventArgs(this));
 
         Destroy(gameObject);
     }
@@ -75,7 +78,14 @@ public class Card : MonoBehaviour
     {
         if(IsOnEdge())
         {
-
+            if(moveSpeed.y > 0)
+            {
+                OnDeath();
+            }
+            else
+            {
+                //TUTAJ NALEŻY PODPIĄĆ PRZEGRANĄ/STRATEHP
+            }
         }
         else
         {
@@ -101,14 +111,40 @@ public class Card : MonoBehaviour
         }
     }
 
-    public virtual void OnSpecialAction()
+    public virtual void PreMoveSpecialAction()
     {
+        Debug.Log("PreMove Special");
+    }
+    public virtual void AfterMoveSpecialAction()
+    {
+        Debug.Log("AfterMove Special");
 
     }
 
     public virtual bool IsOnEdge()
     {
-        return false;
+        int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
+        int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
+
+        if (moveSpeed.y > 0)
+        {
+            if(currentY == 4)
+                return true;
+            else
+                return false;
+        }
+        else if(moveSpeed.y < 0)
+        {
+            if (currentY == 0)
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            Debug.LogError("Lipa");
+            return false;
+        }
     }
 
     public virtual bool OnGridLeave()
@@ -127,5 +163,7 @@ public class Card : MonoBehaviour
         {
             target.OnDeath();
         }
+
+        Move(moveSpeed);
     }
 }
