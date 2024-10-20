@@ -37,10 +37,12 @@ public class TurnController : MonoBehaviour
 
                 case TurnPhase.EnemyAction:
                     Debug.Log($"Turn {turnNumber}: EnemyAction phase");
-                    foreach (var enemy in enemyController.PlacedCard)
+                    for (int i = enemyController.PlacedCard.Count - 1; i >= 0; i--)
                     {
-                        enemy.CardData.MakeCardTurn();
+                        yield return new WaitForSeconds(2f);
+                        enemyController.PlacedCard[i].CardData.MakeCardTurn();
                     }
+
                     currentPhase = TurnPhase.EnemyPrepare;
                     break;
 
@@ -60,10 +62,12 @@ public class TurnController : MonoBehaviour
 
                 case TurnPhase.PlayerAction:
                     Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
-                    foreach (var playerCard in playerManager.PlacedCard)
+                    for (int i = playerManager.PlacedCard.Count - 1; i >= 0; i--)
                     {
-                        playerCard.MakeCardTurn();
+                        yield return new WaitForSeconds(2f);
+                        playerManager.PlacedCard[i].MakeCardTurn();
                     }
+
                     currentPhase = TurnPhase.PlayerTurn;
                     break;
 

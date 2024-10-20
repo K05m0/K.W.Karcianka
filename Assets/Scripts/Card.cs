@@ -18,6 +18,7 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
+        CurrHp = MaxHp;
         gridManager = FindAnyObjectByType<GridManager>();
     }
 
@@ -38,33 +39,66 @@ public class Card : MonoBehaviour
 
     public virtual void OnLoseFight()
     {
+        var yToBack = -moveSpeed.y;
 
-    }
-
-    public virtual void OnDeath()
-    {
-
-    }
-
-    public virtual void OnContact(Card InteractionCard)
-    {
-
-    }
-
-    public virtual void Move(Vector2Int moveValue)
-    {
-        // Oblicz aktualne współrzędne w siatce
         int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
         int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
 
         // Oblicz nowe współrzędne
-        int newX = currentX + moveValue.x;
-        int newY = currentY + moveValue.y;
+        int newX = currentX;
+        int newY = currentY + yToBack;
 
         if (gridManager.IsCellEmpty(newX, newY))
-            cardObject.MoveOnGrid(moveValue.x, moveValue.y);
+            Move(new Vector2Int(0, newY - currentY));
         else
-            OnContact(gridManager.GetCardFromGrid(newX, newY));
+            OnDeath();
+    }
+
+    public virtual void OnDeath()
+    {
+        int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
+        int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
+
+        gridManager.GetCell(currentX,currentY).CardInCell = null;
+        gridManager.GetCell(currentX, currentY).isOccupied = false;
+
+
+        Destroy(gameObject);
+    }
+
+    public virtual void OnContact(Card InteractionCard)
+    {
+        DealDmg(InteractionCard);
+    }
+
+    public virtual void Move(Vector2Int moveValue)
+    {
+        if(IsOnEdge())
+        {
+
+        }
+        else
+        {
+
+            // Oblicz aktualne współrzędne w siatce
+            int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
+            int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
+
+            // Oblicz nowe współrzędne
+            int newX = currentX + moveValue.x;
+            int newY = currentY + moveValue.y;
+
+            if (gridManager.IsCellEmpty(newX, newY))
+            {
+                gridManager.GetCell(currentX, currentY).CardInCell = null;
+                gridManager.GetCell(currentX, currentY).isOccupied = false;
+                cardObject.MoveOnGrid(moveValue.x, moveValue.y);
+            }
+            else
+            {
+                OnContact(gridManager.GetCardFromGrid(newX, newY));
+            }
+        }
     }
 
     public virtual void OnSpecialAction()
@@ -72,9 +106,26 @@ public class Card : MonoBehaviour
 
     }
 
-    public virtual bool IsOnMapEdge()
+    public virtual bool IsOnEdge()
     {
         return false;
     }
 
+    public virtual bool OnGridLeave()
+    {
+        return false;
+    }
+
+    public virtual void DealDmg(Card target)
+    {
+        target.CurrHp -= AttackDmg;
+        if(target.CurrHp > 0)
+        {
+            target.OnLoseFight();
+        }
+        else
+        {
+            target.OnDeath();
+        }
+    }
 }

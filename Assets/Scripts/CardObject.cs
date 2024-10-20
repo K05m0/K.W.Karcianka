@@ -1,7 +1,7 @@
 ﻿using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public  class CardObject : MonoBehaviour
+public class CardObject : MonoBehaviour
 {
     public Card CardData;
     public GridManager gridManager;
@@ -13,6 +13,15 @@ public  class CardObject : MonoBehaviour
 
     public virtual void PlaceOnGrid(int x, int y)
     {
+
+        if (y <= -1)
+        {
+            y = 0;
+        }
+        else if (y > gridManager.gridHeight - 1)
+        {
+            y = gridManager.gridHeight - 1;
+        }
         GridCell targetCell = gridManager.GetCell(x, y);
 
         if (targetCell != null && !targetCell.isOccupied)

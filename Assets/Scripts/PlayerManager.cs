@@ -73,13 +73,19 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
-    public void ModifyPlacedCard(Card usedCard, bool isAdd)
+    public void ModifyPlacedCard(Card usedCard, bool isAdd, bool isMove)
     {
-        if(isAdd)
+        if (isAdd)
         {
-            if(PlacedCard.Contains(usedCard))
+            if (!isMove)
             {
-                Debug.LogError("this card is placed");
+
+                if (PlacedCard.Contains(usedCard))
+                {
+                    Debug.LogError("this card is placed");
+                    return;
+                }
+                PlacedCard.Add(usedCard);
                 return;
             }
 
@@ -88,7 +94,7 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            if(!PlacedCard.Contains(usedCard))
+            if (!PlacedCard.Contains(usedCard))
             {
                 Debug.LogError("this card not exits in list");
                 return;

@@ -19,7 +19,12 @@ public class EnemyController : MonoBehaviour
     public List<Card> PreperedCard = new List<Card>();
     public List<EnemyCard> PlacedCard = new List<EnemyCard>();
 
+    private GridManager gridManager;
 
+    private void Awake()
+    {
+        gridManager = FindAnyObjectByType<GridManager>();
+    }
     //Debug
     /*    private void Awake()
         {
@@ -173,6 +178,11 @@ public class EnemyController : MonoBehaviour
                     .FirstOrDefault();
 
                 cardObject.PlaceOnGrid(index, 4);
+
+                cardIstance.transform.SetParent(gridManager.GetCell(index, 4).transform);
+                cardIstance.transform.localScale = Vector3.one;
+                cardIstance.transform.rotation = Quaternion.identity;
+
                 PlacedCard.Add(cardObject);
             }
             // Usuwanie kart

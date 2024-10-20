@@ -6,7 +6,6 @@ public class PlayerCard : CardObject
     private Vector3 offset;
     private float zCoord;
     private PlayerManager playerManager;
-    private GridManager gridManager; // Odwołanie do managera gridu
     private LayerMask mask = 6;
     private Transform targetedObject;
     [SerializeField] private LayerMask gridLayer = 1 << 7;
@@ -36,9 +35,9 @@ public class PlayerCard : CardObject
     {
         // Przeciąganie karty
         transform.position = GetMouseWorldPos() + offset;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,Mathf.Infinity,mask.value))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         {
             hit.transform.GetComponent<GridCell>().isTargeted = true;
         }
@@ -52,12 +51,12 @@ public class PlayerCard : CardObject
         // Znalezienie najbliższej komórki w gridzie
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red,15f);
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 15f);
 
 
-        if (Physics.Raycast(ray,out var hit,Mathf.Infinity,gridLayer))
+        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, gridLayer))
         {
-            Debug.DrawLine(ray.origin, hit.point, Color.green,15f);
+            Debug.DrawLine(ray.origin, hit.point, Color.green, 15f);
 
             GridCell nearestCell = hit.collider.gameObject.GetComponent<GridCell>();
 
@@ -75,7 +74,7 @@ public class PlayerCard : CardObject
                 transform.SetParent(nearestCell.transform);
                 transform.localScale = new Vector3(1, 1, 1);
                 transform.localPosition = Vector3.zero;
-                transform.rotation = Quaternion.identity;
+                transform.localRotation = Quaternion.identity;
                 IsPlaced = true;
 
 
@@ -130,7 +129,16 @@ public class PlayerCard : CardObject
             transform.position = targetCell.transform.position;
             targetCell.isOccupied = true;
             targetCell.CardInCell = CardData;
+            if (playerManager.PlacedCard.Contains(CardData))
+            {
+                playerManager.ModifyPlacedCard(CardData, true, true);
 
+            }
+            else
+            {
+                playerManager.ModifyPlacedCard(CardData, true, false);
+
+            }
         }
         else
         {

@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 1011383047835757279}
   - component: {fileID: 61327381113903105}
   - component: {fileID: 8728160665485109125}
-  m_Layer: 0
-  m_Name: SoldierCardOBJ
+  m_Layer: 6
+  m_Name: SoldierCardPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.06, y: 0.1, z: 0.045}
+  m_LocalScale: {x: 0.06, y: 0.1, z: 0.08}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 773cfe156e0791f4aa543497de555798, type: 2}
+  - {fileID: 2100000, guid: 0ed943440c3c3984595a0c14d62eadbb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardName: Soldier
   CardCost: 2
-  moveSpeed: {x: 0, y: -1}
+  moveSpeed: {x: 0, y: 1}
   CurrHp: 0
-  MaxHp: 0
-  AttackDmg: 0
+  MaxHp: 4
+  AttackDmg: 1
