@@ -38,11 +38,11 @@ public class InspectionCardMenu : MonoBehaviour
 
     public void HideWindow()
     {
-        window.DOMoveX(-520f, 3f, false).SetEase(Ease.Unset);
+        window.DOMoveX(-520f, 2f, false).SetEase(Ease.Unset);
     }
     public void ShowWindow()
     {
-        window.DOMoveX(-10.82f, 3f, false).SetEase(Ease.Unset);
+        window.DOMoveX(-10.82f, 1.5f, false).SetEase(Ease.Unset);
     }
     
     
