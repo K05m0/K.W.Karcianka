@@ -23,7 +23,7 @@ public class UIManaController : MonoBehaviour
         {
             currentCoins = maxMana;
             maxCoins = maxMana;
-            manaText.text = maxMana + "/" + maxMana;
+            manaText.text = maxMana + "  /  " + maxMana;
             for (int i = 0; i < maxMana; i++)
             {
                 coinList[i].gameObject.SetActive(true);
@@ -32,12 +32,12 @@ public class UIManaController : MonoBehaviour
         
         if (mana < 0)
         {
-            manaText.text = currentCoins+mana + "/" + maxMana;
+            manaText.text = currentCoins+mana + "  /  " + maxMana;
             currentCoins = currentCoins + mana;
         }
         else if(mana == maxMana)
         {
-            manaText.text = maxMana + "/" + maxMana;
+            manaText.text = maxMana + "  /  " + maxMana;
         }
 
         if (mana < 0)
