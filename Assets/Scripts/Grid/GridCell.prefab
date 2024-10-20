@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8090700b896301499440f0f737c8450, type: 2}
+  - {fileID: 2100000, guid: c6b9109e107eedd48855dbdc20435135, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,8 +127,7 @@ MonoBehaviour:
   coordinates: {x: 0, y: 0}
   isOccupied: 0
   isTargeted: 0
-  mainSprite: {fileID: 21300000, guid: d8074c8984249214c88fd42b1638cfb5, type: 3}
-  targetedSprite: {fileID: 21300000, guid: d8074c8984249214c88fd42b1638cfb5, type: 3}
+  CardInCell: {fileID: 0}
 --- !u!199 &1834857794357737045
 ParticleSystemRenderer:
   serializedVersion: 6
