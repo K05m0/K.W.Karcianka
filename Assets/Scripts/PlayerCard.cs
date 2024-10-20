@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 
 public class PlayerCard : CardObject
 {
     private Vector3 originalPosition; // Miejsce początkowe karty
+    private Vector3 originalScale; // Miejsce początkowe karty
+    private quaternion originalRotation; // Miejsce początkowe karty
     private Vector3 offset;
     private float zCoord;
     private PlayerManager playerManager;
-    private LayerMask mask = 6;
+    [SerializeField] private LayerMask mask = (1 << 7) | (1 << 8);
     private Transform targetedObject;
     [SerializeField] private LayerMask gridLayer = 1 << 7;
     private bool IsPlaced = false;
@@ -25,6 +28,8 @@ public class PlayerCard : CardObject
         }
         // Zapamiętujemy początkową pozycję karty
         originalPosition = transform.position;
+        originalScale = transform.localScale;
+        originalRotation = transform.rotation;
 
         // Obliczamy offset
         zCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
@@ -37,9 +42,16 @@ public class PlayerCard : CardObject
         transform.position = GetMouseWorldPos() + offset;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, gridLayer))
         {
-            hit.transform.GetComponent<GridCell>().isTargeted = true;
+            Debug.DrawRay(ray.origin, ray.direction , Color.magenta, 3f);
+            transform.position = hit.transform.position;
+            var newScale = originalScale * 0.5f;
+            transform.localScale = newScale;
+            transform.rotation = new Quaternion(0, 180, 0, 0);
+
+            if (hit.collider.TryGetComponent<GridCell>(out var grid))
+                grid.isTargeted = true;
         }
         // RayCast na Grida / przełączenie boola w nim zmienienie wyglądu grida
     }
@@ -66,6 +78,8 @@ public class PlayerCard : CardObject
                 if (!PlayCard(CardData))
                 {
                     transform.position = originalPosition;
+                    transform.localScale = originalScale;
+                    transform.rotation = originalRotation;
                     return;
                 }
 
@@ -86,6 +100,8 @@ public class PlayerCard : CardObject
             {
                 // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
                 transform.position = originalPosition;
+                transform.localScale = originalScale;
+                transform.rotation = originalRotation;
             }
         }
         else
