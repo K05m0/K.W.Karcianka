@@ -26,8 +26,12 @@ public class Card : MonoBehaviour
 
     private VisualEffect VFX;
 
+    [SerializeField] private AudioClip spawn, death, attack;
+    [SerializeField] private AudioSource audioSource;
+
     private void Awake()
     {
+       audioSource = GetComponent<AudioSource>();
         CurrHp = MaxHp;
         gridManager = FindAnyObjectByType<GridManager>();
     }
@@ -44,7 +48,7 @@ public class Card : MonoBehaviour
 
     public virtual void OnSpawn()
     {
-        VFX.Play();
+        audioSource.PlayOneShot(spawn);
         Debug.Log($"{CardName} : spawned");
     }
 
@@ -68,6 +72,8 @@ public class Card : MonoBehaviour
 
     public virtual void OnDeath()
     {
+        audioSource.PlayOneShot(death);
+
         int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
         int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
 
@@ -177,6 +183,7 @@ public class Card : MonoBehaviour
         if (target == null)
             return;
         target.CurrHp -= AttackDmg;
+        audioSource.PlayOneShot(spawn);
         if (target.CurrHp > 0)
         {
             target.OnLoseFight();
