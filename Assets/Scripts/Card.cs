@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class Card : MonoBehaviour
@@ -15,6 +16,9 @@ public class Card : MonoBehaviour
 
     [HideInInspector] private CardObject cardObject;
     [HideInInspector] private GridManager gridManager;
+    
+    public Sprite cardSprite;
+    public string description;
 
     private void Awake()
     {

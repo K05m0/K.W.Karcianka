@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 61327381113903105}
   - component: {fileID: 8728160665485109125}
   m_Layer: 6
-  m_Name: SoldierCardEnemy
+  m_Name: SoldierCardPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 773cfe156e0791f4aa543497de555798, type: 2}
+  - {fileID: 2100000, guid: 0ed943440c3c3984595a0c14d62eadbb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124,9 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardName: Soldier
   CardCost: 2
-  moveSpeed: {x: 0, y: -1}
+  moveSpeed: {x: 0, y: 1}
   CurrHp: 0
-  MaxHp: 3
+  MaxHp: 4
   AttackDmg: 1
-  cardSprite: {fileID: 21300000, guid: 4e1b480ec3d77654a9c6077e7811e3b4, type: 3}
-  description: Test Enemy
