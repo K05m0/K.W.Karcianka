@@ -9,7 +9,6 @@ public class Menu_Slide_DoTween : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SlideObject();
     }
 
     // Update is called once per frame
@@ -18,9 +17,9 @@ public class Menu_Slide_DoTween : MonoBehaviour
         
     }
 
-    void SlideObject()
+    public void SlideObject()
     {
-        this.transform.DOMove(PointToMove.transform.position, 4f).SetEase(ease);
+        this.transform.DOMove(PointToMove.transform.position, 8f).SetEase(ease);
     }
     
     

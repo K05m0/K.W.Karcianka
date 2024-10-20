@@ -345,11 +345,11 @@ Transform:
   m_GameObject: {fileID: 232822348}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0041766753, y: 0.0012257369, z: 0.45859063, w: 0.888637}
-  m_LocalPosition: {x: -0.332, y: 0.334, z: -0.264}
-  m_LocalScale: {x: 0.019670142, y: 1, z: 0.6}
+  m_LocalPosition: {x: 0.46085003, y: 0.536, z: 0.11839998}
+  m_LocalScale: {x: 0.019670142, y: 1, z: 0.59999996}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1254278779}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.361, y: 0.344, z: 54.594}
 --- !u!114 &232822350
 MonoBehaviour:
@@ -2282,11 +2282,11 @@ Transform:
   m_GameObject: {fileID: 1168469478}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0041766753, y: 0.0012257369, z: 0.45859063, w: 0.888637}
-  m_LocalPosition: {x: 1.225, y: -0.773, z: -0.281}
-  m_LocalScale: {x: 0.019670142, y: 1, z: 0.59999996}
+  m_LocalPosition: {x: 2.01785, y: -0.571, z: 0.10139999}
+  m_LocalScale: {x: 0.019670142, y: 1, z: 0.5999999}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1254278779}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.361, y: 0.344, z: 54.594}
 --- !u!1 &1189514413
 GameObject:
@@ -2425,8 +2425,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 232822349}
-  - {fileID: 1168469479}
   - {fileID: 1059965453}
   - {fileID: 273492579}
   - {fileID: 1189514417}
@@ -2943,7 +2941,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1320340401
 Canvas:
   m_ObjectHideFlags: 0
@@ -4229,6 +4227,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 1061354232}
   - {fileID: 731196773}
+  - {fileID: 232822349}
+  - {fileID: 1168469479}
   - {fileID: 1254278779}
   - {fileID: 1311365316}
   - {fileID: 445239978}
