@@ -23,9 +23,9 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 0.7
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SubtractiveShadowColor: {r: 0.18876824, g: 0.24748276, b: 0.3962264, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -2278,7 +2278,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 2006111363}
     m_Modifications:
     - target: {fileID: 3899101333993993380, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
       propertyPath: m_Name
@@ -2298,15 +2298,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4420200218055077406, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.79631317
+      value: 0.21768689
       objectReference: {fileID: 0}
     - target: {fileID: 4420200218055077406, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.003909707
+      value: -0.07309029
       objectReference: {fileID: 0}
     - target: {fileID: 4420200218055077406, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.9360966
+      value: -1.8030965
       objectReference: {fileID: 0}
     - target: {fileID: 4420200218055077406, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2341,6 +2341,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
+--- !u!4 &1094829677 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4420200218055077406, guid: 13b5b5249d3485b46972569de96fb202, type: 3}
+  m_PrefabInstance: {fileID: 1094829676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1126345709
 GameObject:
   m_ObjectHideFlags: 0
@@ -2813,7 +2818,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 2006111363}
     m_Modifications:
     - target: {fileID: 7407966355871443688, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
       propertyPath: m_Name
@@ -2833,15 +2838,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7891910229279076434, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.2387
+      value: -0.22469997
       objectReference: {fileID: 0}
     - target: {fileID: 7891910229279076434, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.042
+      value: -0.119
       objectReference: {fileID: 0}
     - target: {fileID: 7891910229279076434, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.94108
+      value: 0.07407999
       objectReference: {fileID: 0}
     - target: {fileID: 7891910229279076434, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2876,6 +2881,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
+--- !u!4 &1256943419 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7891910229279076434, guid: 01b48d9c0caa52d44953035cc426324f, type: 3}
+  m_PrefabInstance: {fileID: 1256943418}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1262963897
 GameObject:
   m_ObjectHideFlags: 0
@@ -4345,6 +4355,8 @@ Transform:
   - {fileID: 864033154}
   - {fileID: 469670138}
   - {fileID: 1295223384}
+  - {fileID: 1094829677}
+  - {fileID: 1256943419}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2011361647
@@ -4685,8 +4697,6 @@ SceneRoots:
   - {fileID: 1444799566}
   - {fileID: 2105115105}
   - {fileID: 444936002}
-  - {fileID: 1094829676}
-  - {fileID: 1256943418}
   - {fileID: 770505211}
   - {fileID: 1262963899}
   - {fileID: 1183207346}
