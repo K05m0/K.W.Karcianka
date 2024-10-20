@@ -9,7 +9,8 @@ public class PlayerCard : CardObject
     private GridManager gridManager; // Odwołanie do managera gridu
     private LayerMask mask = 6;
     private Transform targetedObject;
-
+    [SerializeField] private LayerMask gridLayer = 1 << 7;
+    private bool IsPlaced = false;
     void Start()
     {
         // Zakładamy, że gridManager jest w tej samej scenie
@@ -19,6 +20,10 @@ public class PlayerCard : CardObject
 
     void OnMouseDown()
     {
+        if (IsPlaced)
+        {
+            return;
+        }
         // Zapamiętujemy początkową pozycję karty
         originalPosition = transform.position;
 
@@ -42,26 +47,51 @@ public class PlayerCard : CardObject
 
     void OnMouseUp()
     {
+
+        Debug.Log("stopDrag");
         // Znalezienie najbliższej komórki w gridzie
-        GridCell nearestCell = gridManager.GetNearestCell(transform.position);
 
-        // Sprawdzenie, czy komórka jest wolna i czy karta jest wystarczająco blisko
-        if (nearestCell != null && !nearestCell.isOccupied)
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red,15f);
+
+
+        if (Physics.Raycast(ray,out var hit,Mathf.Infinity,gridLayer))
         {
-            if (!PlayCard(CardData))
+            Debug.DrawLine(ray.origin, hit.point, Color.green,15f);
+
+            GridCell nearestCell = hit.collider.gameObject.GetComponent<GridCell>();
+
+            // Sprawdzenie, czy komórka jest wolna i czy karta jest wystarczająco blisko
+            if (nearestCell != null && !nearestCell.isOccupied)
             {
-                transform.position = originalPosition;
-                return;
+                if (!PlayCard(CardData))
+                {
+                    transform.position = originalPosition;
+                    return;
+                }
+
+                // Przenieś kartę do tej komórki
+                PlaceOnGrid(nearestCell.coordinates.x, nearestCell.coordinates.y); // Użyj metody PlaceOnGrid
+                transform.SetParent(nearestCell.transform);
+                transform.localScale = new Vector3(1, 1, 1);
+                transform.localPosition = Vector3.zero;
+                transform.rotation = Quaternion.identity;
+                IsPlaced = true;
+
+
+                // Oznacz komórkę jako zajętą
+                nearestCell.isOccupied = true;
             }
-
-            // Przenieś kartę do tej komórki
-            PlaceOnGrid(nearestCell.coordinates.x, nearestCell.coordinates.y); // Użyj metody PlaceOnGrid
-
-            // Oznacz komórkę jako zajętą
-            nearestCell.isOccupied = true;
+            else
+            {
+                // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
+                transform.position = originalPosition;
+            }
         }
         else
         {
+            Debug.DrawLine(ray.origin, hit.point, Color.magenta, 15f);
+
             // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
             transform.position = originalPosition;
         }
@@ -83,17 +113,20 @@ public class PlayerCard : CardObject
         }
     }
 
-    // Metoda do przemieszczania karty w obrębie gridu
     public void MoveOnGrid(int deltaX, int deltaY)
     {
-        int currentX = Mathf.RoundToInt(transform.position.x / gridManager.cellSize);
-        int currentY = Mathf.RoundToInt(transform.position.z / gridManager.cellSize);
+        // Oblicz aktualne współrzędne w siatce
+        int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
+        int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
 
+        // Oblicz nowe współrzędne
         int newX = currentX + deltaX;
         int newY = currentY + deltaY;
 
+        // Przemieszczanie na nową pozycję w gridzie
         PlaceOnGrid(newX, newY);
     }
+
 
     private Vector3 GetMouseWorldPos()
     {

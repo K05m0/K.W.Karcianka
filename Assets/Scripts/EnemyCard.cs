@@ -33,13 +33,17 @@ public class EnemyCard : CardObject
     // Metoda do przemieszczania karty w obrębie gridu
     public void MoveOnGrid(int deltaX, int deltaY)
     {
-        int currentX = Mathf.RoundToInt(transform.position.x / gridManager.cellSize);
-        int currentY = Mathf.RoundToInt(transform.position.z / gridManager.cellSize); // Używamy Z, ponieważ w Unity Z jest głębokością
+        // Oblicz aktualne współrzędne w siatce
+        int currentX = Mathf.RoundToInt((transform.position.x - gridManager.transform.position.x) / gridManager.cellWidth);
+        int currentY = Mathf.RoundToInt((transform.position.z - gridManager.transform.position.z) / gridManager.cellHeight);
 
+        // Oblicz nowe współrzędne
         int newX = currentX + deltaX;
         int newY = currentY + deltaY;
 
+        // Przemieszczanie na nową pozycję w gridzie
         PlaceOnGrid(newX, newY);
     }
+
 
 }

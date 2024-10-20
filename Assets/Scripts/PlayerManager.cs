@@ -25,6 +25,7 @@ public class PlayerManager : MonoBehaviour
     {
         CardInHand = new Card[CardSlots.Count];
         StartDraw();
+        ResetMana();
     }
     //Draw
     public void StartDraw()

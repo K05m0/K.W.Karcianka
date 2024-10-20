@@ -10,8 +10,6 @@ public class GridCell : MonoBehaviour
 
 
     private SpriteRenderer spriteRenderer;
-    [SerializeField] private Sprite mainSprite;
-    [SerializeField] private Sprite targetedSprite;
 
     // Metoda opcjonalna do ustawienia koordynatów podczas tworzenia gridu
 
@@ -30,15 +28,10 @@ public class GridCell : MonoBehaviour
         
         if (isTargeted == true && isOccupied == false)
         {
-            spriteRenderer.sprite = targetedSprite;
             if (GetComponent<ParticleSystem>().isPlaying != true)
             {
                 GetComponent<ParticleSystem>().Play();
             }
-        }
-        else if(isOccupied == true)
-        {
-            spriteRenderer.sprite = mainSprite;
         }
     }
 }

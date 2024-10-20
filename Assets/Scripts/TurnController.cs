@@ -35,13 +35,15 @@ public class TurnController : MonoBehaviour
 
                 case TurnPhase.EnemyPrepare:
                     Debug.Log($"Turn {turnNumber}: EnemyPrepare phase");
-                    enemyController.PrepareNextWave(turnNumber); // Przygotowanie kolejnej fali
+                    if (enemyController != null)
+                        enemyController.PrepareNextWave(turnNumber); // Przygotowanie kolejnej fali
                     currentPhase = TurnPhase.EnemySpawn;
                     break;
 
                 case TurnPhase.EnemySpawn:
                     Debug.Log($"Turn {turnNumber}: EnemySpawn phase");
-                    enemyController.DecreaseTurnCounter(turnNumber); // Sprawdzamy, czy jednostki mają być spawnowane
+                    if (enemyController != null)
+                        enemyController.DecreaseTurnCounter(turnNumber); // Sprawdzamy, czy jednostki mają być spawnowane
                     currentPhase = TurnPhase.EnemyAction;
                     break;
 
