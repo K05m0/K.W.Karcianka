@@ -1,4 +1,5 @@
-﻿using Unity.Mathematics;
+﻿using DG.Tweening;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerCard : CardObject
@@ -159,6 +160,7 @@ public class PlayerCard : CardObject
         }
         else
         {
+            transform.DOShakeRotation(0.3f, 15f, 0, 40, true);
             return false;
         }
     }
