@@ -113,7 +113,7 @@ public class PlayerCard : CardObject
                 transform.SetParent(nearestCell.transform);
                 transform.localScale = new Vector3(1, 1, 1);
                 transform.localPosition = Vector3.zero;
-                transform.localRotation = Quaternion.identity;
+                transform.localRotation = new Quaternion(0,180,0,0);
                 IsPlaced = true;
 
 

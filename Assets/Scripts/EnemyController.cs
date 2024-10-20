@@ -131,7 +131,7 @@ public class EnemyController : MonoBehaviour
 
                     Card cardIstance = Instantiate(card, selectedPosition.spawnPosition);
                     EnemyCard cardObject = cardIstance.AddComponent<EnemyCard>();
-                 //   cardIstance.transform.rotation = new quaternion(0, 90, 0, 0);
+                    cardIstance.transform.rotation = new Quaternion(0, 90, 0, 0);
                     cardIstance.SetUpCard(cardObject);
                     cardObject.SetUpCard(cardIstance);
                     selectedPosition.selectedCard = cardObject;
