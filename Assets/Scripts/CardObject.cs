@@ -42,6 +42,9 @@ public class CardObject : MonoBehaviour
         int newX = currentX + deltaX;
         int newY = currentY + deltaY;
 
+        gridManager.GetCell(currentX, currentY).isOccupied = false;
+        gridManager.GetCell(currentX, currentY).CardInCell = null;
+
         // Przemieszczanie na nową pozycję w gridzie
         PlaceOnGrid(newX, newY);
     }
