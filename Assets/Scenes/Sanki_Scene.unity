@@ -1806,7 +1806,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f3421d4afaf9441439c362a0e0f857a9, type: 2}
+  - {fileID: 2100000, guid: 5645081f492d07b48889902adda80f67, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2397,7 +2397,7 @@ Transform:
   m_GameObject: {fileID: 1061354228}
   serializedVersion: 2
   m_LocalRotation: {x: 0.33954698, y: -0.6202482, z: 0.33954698, w: 0.62024826}
-  m_LocalPosition: {x: 0.93, y: 1.63, z: 0.16}
+  m_LocalPosition: {x: 0.93, y: 1.63, z: 0.074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
