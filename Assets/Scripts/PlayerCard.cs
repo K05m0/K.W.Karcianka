@@ -7,6 +7,8 @@ public class PlayerCard : CardObject
     private float zCoord;
     private PlayerManager playerManager;
     private GridManager gridManager; // Odwołanie do managera gridu
+    private LayerMask mask = 6;
+    private Transform targetedObject;
 
     void Start()
     {
@@ -29,6 +31,13 @@ public class PlayerCard : CardObject
     {
         // Przeciąganie karty
         transform.position = GetMouseWorldPos() + offset;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit,Mathf.Infinity,mask.value))
+        {
+            hit.transform.GetComponent<GridCell>().isTargeted = true;
+        }
+        // RayCast na Grida / przełączenie boola w nim zmienienie wyglądu grida
     }
 
     void OnMouseUp()
