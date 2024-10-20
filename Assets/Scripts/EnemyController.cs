@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
     public List<PreparePosition> positionToPrepare;
-    [SerializeField] private EnemyCard CardPrefab;
 
     [SerializeField] private List<WaveConfig> waves; // Lista fal konfigurowana z poziomu inspektora
 
@@ -19,37 +19,33 @@ public class EnemyController : MonoBehaviour
     public List<Card> PreperedCard = new List<Card>();
     public List<EnemyCard> PlacedCard = new List<EnemyCard>();
 
-    private void Awake()
-    {
-        Card enemy1 = new Card("enemy1", 0);
-        Card enemy2 = new Card("enemy2", 0);
 
-        EnemyTypeCount type1inWave1 = new EnemyTypeCount(enemy1, 1);
-        WaveConfig wave1 = new WaveConfig("wave1", new List<EnemyTypeCount>() { type1inWave1 }, 1, false); // 1 tura na przygotowanie
+    //Debug
+    /*    private void Awake()
+        {
+            Card enemy1 = new Card("enemy1", 0);
+            Card enemy2 = new Card("enemy2", 0);
 
-        EnemyTypeCount type1inWave2 = new EnemyTypeCount(enemy1, 2);
-        EnemyTypeCount type2inWave2 = new EnemyTypeCount(enemy2, 1);
-        WaveConfig wave2 = new WaveConfig("wave2", new List<EnemyTypeCount>() { type1inWave2, type2inWave2 }, 3, false); // 3 tura na przygotowanie
+            EnemyTypeCount type1inWave1 = new EnemyTypeCount(enemy1, 1);
+            WaveConfig wave1 = new WaveConfig("wave1", new List<EnemyTypeCount>() { type1inWave1 }, 1, false); // 1 tura na przygotowanie
 
-        waves = new List<WaveConfig> { wave1, wave2 };
-    }
+            EnemyTypeCount type1inWave2 = new EnemyTypeCount(enemy1, 2);
+            EnemyTypeCount type2inWave2 = new EnemyTypeCount(enemy2, 1);
+            WaveConfig wave2 = new WaveConfig("wave2", new List<EnemyTypeCount>() { type1inWave2, type2inWave2 }, 3, false); // 3 tura na przygotowanie
+
+            waves = new List<WaveConfig> { wave1, wave2 };
+        }*/
 
     public void PrepareNextWave(int currentTurn)
     {
         if (currentWaveIndex < waves.Count && currentTurn == waves[currentWaveIndex].turnToPrepare)
         {
             WaveConfig currentWave = waves[currentWaveIndex];
+            List<Card> cards = new List<Card>();
 
             // Dodajemy karty przeciwników z bieżącej fali do listy przygotowanych kart
-            foreach (var enemyConfig in currentWave.enemiesToSpawn)
-            {
-                for (int i = 0; i < enemyConfig.count; i++)
-                {
-                    Card newIstance = new Card(enemyConfig.enemyType.CardName, enemyConfig.enemyType.CardCost);
-                    ModifyPreperedCard(new List<Card> { newIstance }, true);
+            ModifyPreperedCard(currentWave.enemiesToSpawn, true);
 
-                }
-            }
 
             // Jeśli spawnImmediately jest true, jednostki od razu wchodzą na planszę
             if (currentWave.spawnImmediately)
@@ -113,12 +109,13 @@ public class EnemyController : MonoBehaviour
                     var selectedPosition = availablePositions[randomPos];
 
                     // Dodajemy kartę do listy przygotowanych i instancjujemy ją na wybranej pozycji
-                    PreperedCard.Add(card);
-                    EnemyCard cardObject = Instantiate(CardPrefab, selectedPosition.spawnPosition);
-                    cardObject.SetUpCard(card);
-
-                    // Oznaczamy tę pozycję jako zajętą, przypisując jej kartę
+                    Card cardIstance = Instantiate(card, selectedPosition.spawnPosition);
+                    EnemyCard cardObject = cardIstance.AddComponent<EnemyCard>();
+                    cardObject.SetUpCard(cardIstance);
                     selectedPosition.selectedCard = cardObject;
+
+                    PreperedCard.Add(cardIstance);
+
                 }
             }
         }
@@ -160,8 +157,9 @@ public class EnemyController : MonoBehaviour
             // Dodawanie kart
             if (isAdd && !PlacedCard.Any(x => x.CardData == card))
             {
-                EnemyCard cardObject = Instantiate(CardPrefab);
-                cardObject.SetUpCard(card);
+                Card cardIstance = Instantiate(card);
+                EnemyCard cardObject = cardIstance.AddComponent<EnemyCard>();
+                cardObject.SetUpCard(cardIstance);
 
                 // Znalezienie indeksu pozycji, na którą karta ma być ustawiona
                 var index = positionToPrepare

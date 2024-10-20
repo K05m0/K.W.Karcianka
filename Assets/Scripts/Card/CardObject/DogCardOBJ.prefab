@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6060397566226813828}
   - component: {fileID: 1011383047835757279}
   - component: {fileID: 61327381113903105}
-  - component: {fileID: 2027135642323563661}
+  - component: {fileID: 1565766672391340651}
   m_Layer: 0
-  m_Name: Card
+  m_Name: DogCardOBJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cd624d3426be1cb4e871be3a9d8de22a, type: 2}
+  - {fileID: 2100000, guid: 7cd97a916f940db4ca9ed9fc4a33fba1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -110,7 +110,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2027135642323563661
+--- !u!114 &1565766672391340651
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,6 +119,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6879152777516384146}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dccf39d51d239e9408a62ce796b9ca99, type: 3}
+  m_Script: {fileID: 11500000, guid: 81b3aa14b34f9d44099e3236a1d0d0b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardName: Dog
+  CardCost: 1

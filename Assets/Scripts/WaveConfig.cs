@@ -4,13 +4,13 @@
 public class WaveConfig
 {
     public string waveName;
-    public List<EnemyTypeCount> enemiesToSpawn;
+    public List<Card> enemiesToSpawn;
     public int turnToPrepare;
     public bool spawnImmediately;
     public bool SpawnNow;
     public bool IsWaveComplete = false; // Flaga informująca, czy fala jest zakończona
 
-    public WaveConfig(string waveName, List<EnemyTypeCount> enemiesToSpawn, int turnToPrepare, bool spawnImmediately)
+    public WaveConfig(string waveName, List<Card> enemiesToSpawn, int turnToPrepare, bool spawnImmediately)
     {
         this.waveName = waveName;
         this.enemiesToSpawn = enemiesToSpawn;

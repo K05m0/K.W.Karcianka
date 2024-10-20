@@ -41,4 +41,5 @@ public class EnemyCard : CardObject
 
         PlaceOnGrid(newX, newY);
     }
+
 }

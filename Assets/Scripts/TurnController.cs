@@ -24,7 +24,10 @@ public class TurnController : MonoBehaviour
                     Debug.Log($"Turn {turnNumber}: start phase");
                     currentPhase = TurnPhase.EnemyPrepare;
                     if (turnNumber == 1)
+                    {
+                        playerManager.StartGame();
                         break;
+                    }
                     playerManager.DrawRandomCard();
                     playerManager.IncreaseMana();
                     playerManager.ResetMana();

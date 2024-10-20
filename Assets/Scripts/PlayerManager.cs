@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-
     [Header("Card Draw")]
-    public PlayerCard cardPrefab;
     public int StartCardAmount = 3;
     public List<Card> AllCardsInDeck = new List<Card>();
 
@@ -22,20 +21,9 @@ public class PlayerManager : MonoBehaviour
     [Header("Placed Card")]
     public List<Card> PlacedCard = new List<Card>();
 
-    private void Awake()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            Card card = new Card($"Card {i}", 2);
-            AllCardsInDeck.Add(card);
-        }
-        CardInHand = new Card[CardSlots.Count];
-        Debug.Log(CardSlots.Count);
-        StartDraw();
-        ResetMana();
-    }
     public void StartGame()
     {
+        CardInHand = new Card[CardSlots.Count];
         StartDraw();
     }
     //Draw
@@ -55,8 +43,10 @@ public class PlayerManager : MonoBehaviour
             {
                 if (CardInHand[i] == null)
                 {
-                    PlayerCard cardObject = Instantiate(cardPrefab, CardSlots[i]);
-                    cardObject.SetUpCard(randCard);
+                    Card card = Instantiate(randCard, CardSlots[i]);
+                    PlayerCard cardObject = card.AddComponent<PlayerCard>();
+
+                    cardObject.SetUpCard(card);
                     cardObject.gameObject.name = cardObject.name;
                     cardObject.transform.position = CardSlots[i].position;
                     CardInHand[i] = cardObject.CardData;

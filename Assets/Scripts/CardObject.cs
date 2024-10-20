@@ -1,10 +1,9 @@
-﻿using UnityEngine;
+﻿using UnityEditor.SceneManagement;
+using UnityEngine;
 
-public abstract class CardObject : MonoBehaviour
+public  class CardObject : MonoBehaviour
 {
     public Card CardData;
-
-
 
     public virtual void SetUpCard(Card selectedCard)
     {

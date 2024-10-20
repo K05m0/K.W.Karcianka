@@ -5,8 +5,8 @@ public class PlayerCard : CardObject
     private Vector3 originalPosition; // Miejsce początkowe karty
     private Vector3 offset;
     private float zCoord;
-    private GridManager gridManager; // Odwołanie do managera gridu
     private PlayerManager playerManager;
+    private GridManager gridManager; // Odwołanie do managera gridu
 
     void Start()
     {
