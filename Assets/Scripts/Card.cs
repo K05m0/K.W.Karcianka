@@ -24,7 +24,7 @@ public class Card : MonoBehaviour
     public Sprite cardSprite;
     public string description;
 
-    private VisualEffect VFX;
+    public VisualEffect VFX;
 
     [SerializeField] private AudioClip spawn, death, attack;
     [SerializeField] private AudioSource audioSource;
@@ -180,6 +180,7 @@ public class Card : MonoBehaviour
 
     public virtual void DealDmg(Card target)
     {
+        audioSource.PlayOneShot(attack);
         if (target == null)
             return;
         target.CurrHp -= AttackDmg;
