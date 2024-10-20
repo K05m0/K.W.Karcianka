@@ -7,12 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fog
-  m_Shader: {fileID: -6465566751694194690, guid: 96be86014be0be149a5c0fd172b6372b, type: 3}
+  m_Name: Shader Graphs_Fog
+  m_Shader: {fileID: -6465566751694194690, guid: da75f00286e4ec2468c657f85d749615, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -25,7 +27,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f8bfaaa74da39744d87ba29c9d735968, type: 3}
+        m_Texture: {fileID: 2800000, guid: 55dc3d78972501e46b1b622fe471d2ca, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,13 +48,47 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
+    - _AlphaClip: 1
+    - _AlphaToMask: 0
+    - _Blend: 0
+    - _BlendModePreserveSpecular: 1
+    - _Bot_Fallof: 0.61
+    - _Bot_Noise_Power: 1
+    - _Bot_Noise_Scale: 30
+    - _CastShadows: 1
+    - _Cull: 0
+    - _DstBlend: 10
+    - _Fog_Brightness: 1
+    - _Fog_Strenght_0_5: 1
+    - _Left_Fallof: -0.27
+    - _Left_Noise_Power: 1
+    - _Left_Noise_Scale: 30
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Speed: 2
-    m_Colors: []
+    - _ReceiveShadows: 1
+    - _Right_Fallof: 2.09
+    - _Right_Noise_Power: 1
+    - _Right_Noise_Scale: 30
+    - _SrcBlend: 1
+    - _Surface: 1
+    - _Top_Fallof: 1.15
+    - _Top_Noise_Power: 1
+    - _Top_Noise_Scale: 30
+    - _WorkflowMode: 0
+    - _ZTest: 4
+    - _ZWrite: 0
+    - _ZWriteControl: 0
+    m_Colors:
+    - _Bot_Noise_Speed: {r: -1, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Left_Noise_Speed: {r: -1, g: 0, b: 0, a: 0}
+    - _Right_Noise_Speed: {r: -1, g: 0, b: 0, a: 0}
+    - _Texture_Speed: {r: -1, g: 0, b: 0, a: 0}
+    - _Top_Noise_Speed: {r: -1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &4035843682554227279
+--- !u!114 &7217937127991776419
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
