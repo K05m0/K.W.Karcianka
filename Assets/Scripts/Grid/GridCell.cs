@@ -16,7 +16,8 @@ public class GridCell : MonoBehaviour
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (TryGetComponent<SpriteRenderer>(out var renderer))
+            spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void SetCoordinates(int x, int y)
@@ -26,13 +27,17 @@ public class GridCell : MonoBehaviour
 
     public void Update()
     {
-        
+
         if (isTargeted == true && isOccupied == false)
         {
-            if (GetComponent<ParticleSystem>().isPlaying != true)
+            if (TryGetComponent<SpriteRenderer>(out var renderer))
             {
-                GetComponent<ParticleSystem>().Play();
+                if (GetComponent<ParticleSystem>().isPlaying != true)
+                {
+                    GetComponent<ParticleSystem>().Play();
+                }
             }
+
         }
     }
 }

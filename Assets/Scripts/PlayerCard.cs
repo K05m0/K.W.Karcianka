@@ -14,6 +14,8 @@ public class PlayerCard : CardObject
     private Transform targetedObject;
     [SerializeField] private LayerMask gridLayer = 1 << 7;
     private bool IsPlaced = false;
+    private GameObject holder = null;
+    [SerializeField] private float offestUp = 0.15f;
     void Start()
     {
         // Zakładamy, że gridManager jest w tej samej scenie
@@ -39,20 +41,36 @@ public class PlayerCard : CardObject
 
     void OnMouseDrag()
     {
+        if (holder != null)
+        {
+            holder.transform.GetChild(0).gameObject.SetActive(false);
+            holder = null;
+        }
+
         // Przeciąganie karty
         transform.position = GetMouseWorldPos() + offset;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, gridLayer))
         {
-            Debug.DrawRay(ray.origin, ray.direction , Color.magenta, 3f);
-            transform.position = hit.transform.position;
+            Debug.DrawRay(ray.origin, ray.direction, Color.magenta, 3f);
             var newScale = originalScale * 0.5f;
             transform.localScale = newScale;
             transform.rotation = new Quaternion(0, 180, 0, 0);
 
+
+
             if (hit.collider.TryGetComponent<GridCell>(out var grid))
+            {
                 grid.isTargeted = true;
+                if(holder != null && holder != grid.gameObject)
+                {
+                    holder.transform.GetChild(0).gameObject.SetActive(false);
+                    holder = null;
+                }
+                grid.transform.GetChild(0).gameObject.SetActive(true);
+                holder = grid.gameObject;
+            }
         }
         // RayCast na Grida / przełączenie boola w nim zmienienie wyglądu grida
     }
@@ -72,6 +90,12 @@ public class PlayerCard : CardObject
             Debug.DrawLine(ray.origin, hit.point, Color.green, 15f);
 
             GridCell nearestCell = hit.collider.gameObject.GetComponent<GridCell>();
+
+            if (holder != null && holder)
+            {
+                holder.transform.GetChild(0).gameObject.SetActive(false);
+                holder = null;
+            }
 
             // Sprawdzenie, czy komórka jest wolna i czy karta jest wystarczająco blisko
             if (nearestCell != null && !nearestCell.isOccupied)
@@ -111,6 +135,9 @@ public class PlayerCard : CardObject
 
             // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
             transform.position = originalPosition;
+            transform.position = originalPosition;
+            transform.localScale = originalScale;
+            transform.rotation = originalRotation;
         }
     }
 

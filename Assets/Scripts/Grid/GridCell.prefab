@@ -138,7 +138,10 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 30
+        m_Name: Amount of Particles
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
