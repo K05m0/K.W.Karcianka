@@ -101,12 +101,14 @@ public class PlayerManager : MonoBehaviour
     public void ResetMana()
     {
         CurrMana = MaxManaIsThisRound;
+        ManaInfromationEvent.current.ManaChange(CurrMana,MaxManaIsThisRound);
     }
     public void IncreaseMana()
     {
         if (MaxManaIsThisRound < MaxGameMana)
         {
             MaxManaIsThisRound++;
+            ManaInfromationEvent.current.ManaChange(CurrMana,MaxManaIsThisRound);
         }
         else
         {
@@ -118,6 +120,7 @@ public class PlayerManager : MonoBehaviour
         if (Cost <= CurrMana)
         {
             CurrMana -= Cost;
+            ManaInfromationEvent.current.ManaChange(-Cost,MaxManaIsThisRound);
             return true;
         }
         else
@@ -127,7 +130,10 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-
+    private void Update()
+    {
+        Debug.Log(CurrMana);
+    }
 }
 
 
