@@ -153,7 +153,6 @@ Transform:
   - {fileID: 724308605}
   - {fileID: 950498487}
   - {fileID: 1570289720}
-  - {fileID: 189059996}
   - {fileID: 1301371663}
   - {fileID: 479322405}
   - {fileID: 1526199727}
@@ -190,13 +189,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189059995}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5, y: -0.5, z: 0.5, w: -0.5}
-  m_LocalPosition: {x: -0.76699996, y: 0, z: 0.338}
-  m_LocalScale: {x: 0.27521, y: 0.27521, z: 0.27521}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1369246333}
-  m_Father: {fileID: 180186863}
+  m_Father: {fileID: 1301371663}
   m_LocalEulerAnglesHint: {x: 90, y: -180, z: 90}
 --- !u!212 &189059997
 SpriteRenderer:
@@ -2285,8 +2284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5899a18a1885f8e498e6950e725c2b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swayStrength: 0.5
-  smoothSpeed: 2
+  swayStrength: 2
+  smoothSpeed: 9
 --- !u!1001 &1094829676
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3082,7 +3081,7 @@ GameObject:
   - component: {fileID: 1301371663}
   - component: {fileID: 1301371662}
   m_Layer: 0
-  m_Name: frame (2)
+  m_Name: frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3155,7 +3154,8 @@ Transform:
   m_LocalPosition: {x: -0.76699996, y: 0, z: 0.338}
   m_LocalScale: {x: 0.27521, y: 0.27521, z: 0.27521}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 189059996}
   m_Father: {fileID: 180186863}
   m_LocalEulerAnglesHint: {x: 90, y: -180, z: 90}
 --- !u!1 &1311365312
@@ -3365,7 +3365,7 @@ GameObject:
   - component: {fileID: 1369246335}
   - component: {fileID: 1369246334}
   m_Layer: 0
-  m_Name: Tile Hover
+  m_Name: HoverVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3447,7 +3447,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: -43.6
+      - m_Value: 33.1
         m_Name: Amount of Particles
         m_Overridden: 1
     m_Vector2f:
