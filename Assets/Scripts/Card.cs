@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -180,7 +181,6 @@ public class Card : MonoBehaviour
 
     public virtual void DealDmg(Card target)
     {
-        audioSource.PlayOneShot(attack);
         if (target == null)
             return;
         target.CurrHp -= AttackDmg;
