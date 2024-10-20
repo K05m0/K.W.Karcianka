@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [System.Serializable]
 public class Card : MonoBehaviour
@@ -22,6 +23,8 @@ public class Card : MonoBehaviour
     public Sprite cardSprite;
     public string description;
 
+    private VisualEffect VFX;
+
     private void Awake()
     {
         CurrHp = MaxHp;
@@ -40,6 +43,7 @@ public class Card : MonoBehaviour
 
     public virtual void OnSpawn()
     {
+        VFX.Play();
         Debug.Log($"{CardName} : spawned");
     }
 
