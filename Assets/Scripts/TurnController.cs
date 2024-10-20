@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
     public EnemyController enemyController; // Referencja do kontrolera przeciwników
+    public PlayerManager playerManager;
     private int turnNumber = 1; // Numer aktualnej tury
-    private enum TurnPhase { EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd }
-    private TurnPhase currentPhase = TurnPhase.EnemyPrepare;
+    private enum TurnPhase { StartTurn, EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd, PlayerAction }
+    private TurnPhase currentPhase = TurnPhase.StartTurn;
 
     private void Start()
     {
@@ -19,28 +21,60 @@ public class TurnController : MonoBehaviour
         {
             switch (currentPhase)
             {
+
+
+                case TurnPhase.StartTurn:
+                    Debug.Log($"Turn {turnNumber}: start phase");
+                    currentPhase = TurnPhase.EnemyAction;
+                    if (turnNumber == 1)
+                    {
+                        playerManager.StartGame();
+                        break;
+                    }
+                    playerManager.DrawRandomCard();
+                    playerManager.IncreaseMana();
+                    playerManager.ResetMana();
+                    break;
+
+                case TurnPhase.EnemyAction:
+                    Debug.Log($"Turn {turnNumber}: EnemyAction phase");
+                    for (int i = enemyController.PlacedCard.Count - 1; i >= 0; i--)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                        enemyController.PlacedCard[i].CardData.MakeCardTurn();
+                    }
+
+                    currentPhase = TurnPhase.EnemyPrepare;
+                    break;
+
                 case TurnPhase.EnemyPrepare:
                     Debug.Log($"Turn {turnNumber}: EnemyPrepare phase");
-                    enemyController.PrepareNextWave(turnNumber); // Przygotowanie kolejnej fali
+                    if (enemyController != null)
+                        enemyController.PrepareNextWave(turnNumber); // Przygotowanie kolejnej fali
                     currentPhase = TurnPhase.EnemySpawn;
                     break;
 
                 case TurnPhase.EnemySpawn:
                     Debug.Log($"Turn {turnNumber}: EnemySpawn phase");
-                    enemyController.DecreaseTurnCounter(turnNumber); // Sprawdzamy, czy jednostki mają być spawnowane
-                    currentPhase = TurnPhase.EnemyAction;
+                    if (enemyController != null)
+                        enemyController.DecreaseTurnCounter(turnNumber); // Sprawdzamy, czy jednostki mają być spawnowane
+                    currentPhase = TurnPhase.PlayerAction;
                     break;
 
-                case TurnPhase.EnemyAction:
-                    Debug.Log($"Turn {turnNumber}: EnemyAction phase");
-                    // Tu możesz dodać ruchy i akcje przeciwników
-                    yield return new WaitForSeconds(2f); // Przykładowy delay na wykonanie akcji
+                case TurnPhase.PlayerAction:
+                    Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
+                    for (int i = playerManager.PlacedCard.Count - 1; i >= 0; i--)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                        playerManager.PlacedCard[i].MakeCardTurn();
+                    }
+
                     currentPhase = TurnPhase.PlayerTurn;
                     break;
 
                 case TurnPhase.PlayerTurn:
                     Debug.Log($"Turn {turnNumber}: PlayerTurn phase");
-                    // Czekamy na ruch gracza (np. ustawienie jednostek)
+
                     yield return new WaitUntil(() => PlayerFinishedTurn());
                     currentPhase = TurnPhase.TurnEnd;
                     break;
@@ -48,7 +82,7 @@ public class TurnController : MonoBehaviour
                 case TurnPhase.TurnEnd:
                     Debug.Log($"Turn {turnNumber}: TurnEnd phase");
                     turnNumber++;
-                    currentPhase = TurnPhase.EnemyPrepare;
+                    currentPhase = TurnPhase.StartTurn;
                     break;
             }
 
@@ -61,5 +95,14 @@ public class TurnController : MonoBehaviour
     {
         // Można tutaj dodać logikę końca tury gracza, np. naciśnięcie przycisku
         return Input.GetKeyDown(KeyCode.Space); // Przykładowo naciśnięcie spacji kończy turę gracza
+    }
+}
+public class CardDeathEventArgs : EventArgs
+{
+    public Card DeadCard { get; private set; }
+
+    public CardDeathEventArgs(Card deadCard)
+    {
+        DeadCard = deadCard;
     }
 }

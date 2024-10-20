@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-
     [Header("Card Draw")]
-    public PlayerCard cardPrefab;
     public int StartCardAmount = 3;
     public List<Card> AllCardsInDeck = new List<Card>();
 
@@ -22,30 +21,28 @@ public class PlayerManager : MonoBehaviour
     [Header("Placed Card")]
     public List<Card> PlacedCard = new List<Card>();
 
-    private void Awake()
+    private void OnEnable()
     {
-        for (int i = 0; i < 10; i++)
-        {
-            Card card = new Card($"Card {i}", 2);
-            AllCardsInDeck.Add(card);
-        }
-        CardInHand = new Card[CardSlots.Count];
-        Debug.Log(CardSlots.Count);
-        StartDraw();
-        ResetMana();
+        Card.OnCardDeath += HandleCardDeath;
     }
-    private void Update()
+
+    private void OnDisable()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            DrawRandomCard();
-            IncreaseMana();
-            ResetMana();
-        }
+        Card.OnCardDeath -= HandleCardDeath;
     }
+
+    private void HandleCardDeath(object sender, CardDeathEventArgs e)
+    {
+        // Obsługa zdarzenia - np. usunięcie karty z listy PlacedCard
+        ModifyPlacedCard(e.DeadCard, false, false);
+        Debug.Log("Karta zmarła: " + e.DeadCard);
+    }
+
     public void StartGame()
     {
+        CardInHand = new Card[CardSlots.Count];
         StartDraw();
+        ResetMana();
     }
     //Draw
     public void StartDraw()
@@ -64,8 +61,11 @@ public class PlayerManager : MonoBehaviour
             {
                 if (CardInHand[i] == null)
                 {
-                    PlayerCard cardObject = Instantiate(cardPrefab, CardSlots[i]);
-                    cardObject.SetUpCard(randCard);
+                    Card card = Instantiate(randCard, CardSlots[i]);
+                    PlayerCard cardObject = card.AddComponent<PlayerCard>();
+                    card.SetUpCard(cardObject);
+
+                    cardObject.SetUpCard(card);
                     cardObject.gameObject.name = cardObject.name;
                     cardObject.transform.position = CardSlots[i].position;
                     CardInHand[i] = cardObject.CardData;
@@ -90,24 +90,33 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
-    public void ModifyPlacedCard(Card usedCard, bool isAdd)
+    public void ModifyPlacedCard(Card usedCard, bool isAdd, bool isMove)
     {
-        if(isAdd)
+        if (isAdd)
         {
-            if(PlacedCard.Contains(usedCard))
+            if (!isMove)
             {
-                Debug.LogError("this card is placed");
+
+                if (PlacedCard.Contains(usedCard))
+                {
+                    Debug.LogError("this card is placed");
+                    return;
+                }
+                PlacedCard.Add(usedCard);
                 return;
             }
-
+            if(PlacedCard.Contains(usedCard))
+            {
+                Debug.Log("this card is placed");
+                return;
+            }
             PlacedCard.Add(usedCard);
             return;
         }
         else
         {
-            if(!PlacedCard.Contains(usedCard))
+            if (!PlacedCard.Contains(usedCard))
             {
-                Debug.LogError("this card not exits in list");
                 return;
             }
             PlacedCard.Remove(usedCard);
@@ -119,12 +128,14 @@ public class PlayerManager : MonoBehaviour
     public void ResetMana()
     {
         CurrMana = MaxManaIsThisRound;
+        ManaInfromationEvent.current.ManaChange(CurrMana,MaxManaIsThisRound);
     }
     public void IncreaseMana()
     {
         if (MaxManaIsThisRound < MaxGameMana)
         {
             MaxManaIsThisRound++;
+            ManaInfromationEvent.current.ManaChange(CurrMana,MaxManaIsThisRound);
         }
         else
         {
@@ -136,6 +147,7 @@ public class PlayerManager : MonoBehaviour
         if (Cost <= CurrMana)
         {
             CurrMana -= Cost;
+            ManaInfromationEvent.current.ManaChange(-Cost,MaxManaIsThisRound);
             return true;
         }
         else
@@ -144,8 +156,6 @@ public class PlayerManager : MonoBehaviour
             return false;
         }
     }
-
-
 }
 
 

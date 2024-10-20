@@ -7,12 +7,14 @@ public class GridManager : MonoBehaviour
     public GameObject gridCellPrefab; // Prefab komórki gridu
     public int gridWidth = 5;
     public int gridHeight = 5;
-    public float cellSize = 1.0f;
+    public float cellWidth = 1.0f;   // Szerokość komórki
+    public float cellHeight = 1.0f;  // Wysokość komórki
 
     private GridCell[,] gridCells;
     private int lastGridWidth;
     private int lastGridHeight;
-    private float lastCellSize;
+    private float lastCellWidth;
+    private float lastCellHeight;
     private bool needsRefresh = false;  // Flaga do opóźnienia odświeżania
 
     // OnValidate jest wywoływana automatycznie przy każdej zmianie w inspektorze Unity
@@ -29,7 +31,7 @@ public class GridManager : MonoBehaviour
     void Update()
     {
         // Jeśli potrzebne jest odświeżenie gridu (ustawione w OnValidate), odśwież teraz
-        if (needsRefresh || gridWidth != lastGridWidth || gridHeight != lastGridHeight || cellSize != lastCellSize)
+        if (needsRefresh || gridWidth != lastGridWidth || gridHeight != lastGridHeight || cellWidth != lastCellWidth || cellHeight != lastCellHeight)
         {
             RefreshGrid();
             needsRefresh = false;  // Resetujemy flagę po odświeżeniu
@@ -42,7 +44,8 @@ public class GridManager : MonoBehaviour
         // Aktualizujemy zapisane wartości parametrów
         lastGridWidth = gridWidth;
         lastGridHeight = gridHeight;
-        lastCellSize = cellSize;
+        lastCellWidth = cellWidth;
+        lastCellHeight = cellHeight;
 
         ClearGrid();  // Usunięcie istniejących komórek gridu
         GenerateGrid();  // Ponowne wygenerowanie nowego gridu
@@ -58,12 +61,14 @@ public class GridManager : MonoBehaviour
 
         gridCells = new GridCell[gridWidth, gridHeight];
 
+        Vector3 startPosition = transform.position;  // Pobieramy pozycję startową z obiektu, który posiada tę klasę
+
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                // Ustawiamy współrzędne z = 0, aby wszystkie komórki były w jednej płaszczyźnie
-                Vector3 cellPosition = new Vector3(x * cellSize, 0, y * cellSize);
+                // Ustawiamy pozycję każdej komórki bazując na pozycji obiektu z GridManager i rozmiarach komórek
+                Vector3 cellPosition = new Vector3(startPosition.x + x * cellWidth, startPosition.y, startPosition.z + y * cellHeight);
                 GameObject cell = Instantiate(gridCellPrefab, cellPosition, Quaternion.identity, this.transform); // Dodajemy nowo wygenerowane komórki jako dzieci obiektu GridManager
                 GridCell gridCell = cell.GetComponent<GridCell>();
                 gridCell.SetCoordinates(x, y);
@@ -111,7 +116,7 @@ public class GridManager : MonoBehaviour
             return null;
         }
 
-        float closestDistance = cellSize * 0.5f; // Ustal próg odległości
+        float closestDistance = 1f;
         GridCell closestCell = null;
 
         foreach (GridCell cell in gridCells)
@@ -138,4 +143,35 @@ public class GridManager : MonoBehaviour
         return gridCells[x, y]; // Zwróć odpowiednią komórkę
     }
 
+    // Metoda sprawdzająca, czy komórka o współrzędnych x i y jest pusta
+    public bool IsCellEmpty(int x, int y)
+    {
+        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
+        {
+            Debug.LogWarning("Requested cell is out of bounds.");
+            return false; // Zwróć false, jeśli współrzędne są poza zakresem
+        }
+
+        if (!gridCells[x, y].isOccupied)
+            return true;
+        else
+            return false; // Zwraca true, jeśli komórka jest pusta (null)
+    }
+
+    public Card GetCardFromGrid(int x, int y)
+    {
+        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
+        {
+            Debug.LogWarning("Requested cell is out of bounds.");
+            return null; // Zwróć false, jeśli współrzędne są poza zakresem
+        }
+
+        if(gridCells[x, y].CardInCell == null)
+        {
+            Debug.Log("Requested cell is empty");
+            return null;
+        }
+
+        return gridCells[x, y].CardInCell;
+    }
 }

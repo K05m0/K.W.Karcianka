@@ -5,11 +5,11 @@ public class PlayerCard : CardObject
     private Vector3 originalPosition; // Miejsce początkowe karty
     private Vector3 offset;
     private float zCoord;
-    private GridManager gridManager; // Odwołanie do managera gridu
     private PlayerManager playerManager;
     private LayerMask mask = 6;
     private Transform targetedObject;
-
+    [SerializeField] private LayerMask gridLayer = 1 << 7;
+    private bool IsPlaced = false;
     void Start()
     {
         // Zakładamy, że gridManager jest w tej samej scenie
@@ -19,6 +19,10 @@ public class PlayerCard : CardObject
 
     void OnMouseDown()
     {
+        if (IsPlaced)
+        {
+            return;
+        }
         // Zapamiętujemy początkową pozycję karty
         originalPosition = transform.position;
 
@@ -31,9 +35,9 @@ public class PlayerCard : CardObject
     {
         // Przeciąganie karty
         transform.position = GetMouseWorldPos() + offset;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,Mathf.Infinity,mask.value))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         {
             hit.transform.GetComponent<GridCell>().isTargeted = true;
         }
@@ -42,59 +46,58 @@ public class PlayerCard : CardObject
 
     void OnMouseUp()
     {
+
+        Debug.Log("stopDrag");
         // Znalezienie najbliższej komórki w gridzie
-        GridCell nearestCell = gridManager.GetNearestCell(transform.position);
 
-        // Sprawdzenie, czy komórka jest wolna i czy karta jest wystarczająco blisko
-        if (nearestCell != null && !nearestCell.isOccupied)
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 15f);
+
+
+        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, gridLayer))
         {
-            if (!PlayCard(CardData))
+            Debug.DrawLine(ray.origin, hit.point, Color.green, 15f);
+
+            GridCell nearestCell = hit.collider.gameObject.GetComponent<GridCell>();
+
+            // Sprawdzenie, czy komórka jest wolna i czy karta jest wystarczająco blisko
+            if (nearestCell != null && !nearestCell.isOccupied)
             {
-                transform.position = originalPosition;
-                return;
+                if (!PlayCard(CardData))
+                {
+                    transform.position = originalPosition;
+                    return;
+                }
+
+                // Przenieś kartę do tej komórki
+                PlaceOnGrid(nearestCell.coordinates.x, nearestCell.coordinates.y); // Użyj metody PlaceOnGrid
+                transform.SetParent(nearestCell.transform);
+                transform.localScale = new Vector3(1, 1, 1);
+                transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+                IsPlaced = true;
+
+
+                // Oznacz komórkę jako zajętą
+                nearestCell.isOccupied = true;
+                nearestCell.CardInCell = CardData;
             }
-
-            // Przenieś kartę do tej komórki
-            PlaceOnGrid(nearestCell.coordinates.x, nearestCell.coordinates.y); // Użyj metody PlaceOnGrid
-
-            // Oznacz komórkę jako zajętą
-            nearestCell.isOccupied = true;
+            else
+            {
+                // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
+                transform.position = originalPosition;
+            }
         }
         else
         {
+            Debug.DrawLine(ray.origin, hit.point, Color.magenta, 15f);
+
             // Powrót do oryginalnej pozycji, jeśli komórka jest zajęta lub nie ma najbliższej komórki
             transform.position = originalPosition;
         }
     }
 
     // Metoda do umieszczania karty w danej komórce gridu
-    private void PlaceOnGrid(int x, int y)
-    {
-        GridCell targetCell = gridManager.GetCell(x, y);
-
-        if (targetCell != null && !targetCell.isOccupied)
-        {
-            transform.position = targetCell.transform.position;
-            targetCell.isOccupied = true;
-        }
-        else
-        {
-            transform.position = originalPosition; // Jeśli nie można umieścić, wróć do oryginalnej pozycji
-        }
-    }
-
-    // Metoda do przemieszczania karty w obrębie gridu
-    public void MoveOnGrid(int deltaX, int deltaY)
-    {
-        int currentX = Mathf.RoundToInt(transform.position.x / gridManager.cellSize);
-        int currentY = Mathf.RoundToInt(transform.position.z / gridManager.cellSize);
-
-        int newX = currentX + deltaX;
-        int newY = currentY + deltaY;
-
-        PlaceOnGrid(newX, newY);
-    }
-
     private Vector3 GetMouseWorldPos()
     {
         Vector3 mousePoint = Input.mousePosition;
@@ -107,11 +110,39 @@ public class PlayerCard : CardObject
         if (playerManager.UseMana(usedCard.CardCost))
         {
             playerManager.UseSlot(usedCard);
+
+            usedCard.OnSpawn();
             return true;
         }
         else
         {
             return false;
+        }
+    }
+
+    public override void PlaceOnGrid(int x, int y)
+    {
+        GridCell targetCell = gridManager.GetCell(x, y);
+
+        if (targetCell != null && !targetCell.isOccupied)
+        {
+            transform.position = targetCell.transform.position;
+            targetCell.isOccupied = true;
+            targetCell.CardInCell = CardData;
+            if (playerManager.PlacedCard.Contains(CardData))
+            {
+                playerManager.ModifyPlacedCard(CardData, true, true);
+
+            }
+            else
+            {
+                playerManager.ModifyPlacedCard(CardData, true, false);
+
+            }
+        }
+        else
+        {
+            transform.position = originalPosition; // Jeśli nie można umieścić, wróć do oryginalnej pozycji
         }
     }
 }
