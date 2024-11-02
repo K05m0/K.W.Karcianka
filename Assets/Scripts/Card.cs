@@ -9,6 +9,15 @@ public class Card : MonoBehaviour
 {
     public enum CardType { Enemy, Player }
     public CardType Type = CardType.Player;
+
+    public GridController Controller;
+
+    public virtual void SetUpCard(GridController controller)
+    {
+        Controller = controller;
+    }
+    /*public enum CardType { Enemy, Player }
+    public CardType Type = CardType.Player;
     public string CardName;
     public int CardCost = 2;
 
@@ -21,7 +30,8 @@ public class Card : MonoBehaviour
     [HideInInspector] private CardObject cardObject;
     [HideInInspector] private GridManager gridManager;
     public static event EventHandler<CardDeathEventArgs> OnCardDeath;
-    
+    public static event EventHandler DefeatEvent;
+
     public Sprite cardSprite;
     public string description;
 
@@ -112,7 +122,7 @@ public class Card : MonoBehaviour
                 }
                 else
                 {
-                    //Logika kończąca gre
+                    DefeatEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
 
@@ -209,5 +219,5 @@ public class Card : MonoBehaviour
         {
             return new Vector2Int(moveSpeed.x, Mathf.Abs(moveSpeed.y)); // Player porusza się w górę, więc wartość y jest dodatnia
         }
-    }
+    }*/
 }

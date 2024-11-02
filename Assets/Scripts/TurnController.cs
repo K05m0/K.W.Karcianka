@@ -4,11 +4,30 @@ using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
+    [SerializeField] private GameObject defeatParent;
+
     public EnemyController enemyController; // Referencja do kontrolera przeciwników
     public PlayerManager playerManager;
     private int turnNumber = 1; // Numer aktualnej tury
     private enum TurnPhase { StartTurn, EnemyPrepare, EnemySpawn, EnemyAction, PlayerTurn, TurnEnd, PlayerAction }
     private TurnPhase currentPhase = TurnPhase.StartTurn;
+
+    private void OnEnable()
+    {
+        Card.DefeatEvent += ShowDefeatCanvas();
+    }
+
+    private EventHandler ShowDefeatCanvas()
+    {
+        Debug.Log("chuj");
+        return null;
+    }
+
+    private void OnDisable()
+    {
+        Card.DefeatEvent -= ShowDefeatCanvas();
+
+    }
 
     private void Start()
     {
