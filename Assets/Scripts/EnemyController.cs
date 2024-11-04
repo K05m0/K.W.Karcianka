@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -40,7 +40,7 @@ public class EnemyController : MonoBehaviour
         gridManager = FindAnyObjectByType<GridManager>();
     }
     //Debug
-    /*    private void Awake()
+    *//*    private void Awake()
         {
             Card enemy1 = new Card("enemy1", 0);
             Card enemy2 = new Card("enemy2", 0);
@@ -53,7 +53,7 @@ public class EnemyController : MonoBehaviour
             WaveConfig wave2 = new WaveConfig("wave2", new List<EnemyTypeCount>() { type1inWave2, type2inWave2 }, 3, false); // 3 tura na przygotowanie
 
             waves = new List<WaveConfig> { wave1, wave2 };
-        }*/
+        }*//*
 
     public void PrepareNextWave(int currentTurn)
     {
@@ -233,4 +233,4 @@ public class PreparePosition
 {
     public Transform spawnPosition;
     public EnemyCard selectedCard;
-}
+}*/

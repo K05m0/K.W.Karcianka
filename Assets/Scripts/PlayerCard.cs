@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+﻿/*using DG.Tweening;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -191,3 +191,4 @@ public class PlayerCard : CardObject
         }
     }
 }
+*/

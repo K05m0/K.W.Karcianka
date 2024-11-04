@@ -6,6 +6,7 @@ using UnityEngine;
 public class GridController : MonoBehaviour
 {
     [SerializeField] private GridElement gridCellPrefab;
+    [SerializeField] private float cellElementSize;
     public int GridWidth;
     public int GridHeight;
     public float CellWidthOffset;
@@ -74,10 +75,13 @@ public class GridController : MonoBehaviour
             for (int y = 0; y < GridHeight; y++)
             {
                 GridElement cell = Instantiate(gridCellPrefab, transform);
+                cell.gameObject.transform.localScale = cell.gameObject.transform.localScale * cellElementSize;
                 cell.SetUp();
-                Vector3 cellPosition = new Vector3(startPosition.x + ((cell.GridSize.x * x) + CellWidthOffset),
+                Vector3 cellPosition = new Vector3(startPosition.x + ((cell.GridSize.x + CellWidthOffset) * x),
                                                    startPosition.y,
-                                                   startPosition.z + ((cell.GridSize.z * y) + CellWidthOffset));
+                                                   startPosition.z + ((cell.GridSize.z + CellHeightOffset) * y));
+
+                Debug.Log($"Cell nr{x} {y} position: {cellPosition}");
                 cell.gameObject.transform.localPosition = cellPosition;
                 cell.transform.rotation = Quaternion.identity;
                 cell.SetUpCoordinate(x, y);
@@ -115,9 +119,9 @@ public class GridController : MonoBehaviour
     }
 
     // Grid Operation
-    public void SetCellOccupied(int x , int y, Card card)
+    public void SetCellOccupied(int x, int y, Card card)
     {
-        GridCoordinate[x,y].SetCellOccupied(card);
+        GridCoordinate[x, y].SetCellOccupied(card);
     }
     public void SetCellOccupied(GridElement cell, Card card)
     {
@@ -141,12 +145,12 @@ public class GridController : MonoBehaviour
             Debug.LogWarning("Requested cell is out of bounds.");
             return false; // Zwróć false, jeśli współrzędne są poza zakresem
         }
-        if (GridCoordinate[x,y].CardInCell != null)
+        if (GridCoordinate[x, y].CardInCell != null)
         {
             return false;
         }
 
-        return true; 
+        return true;
     }
     public bool IsSlotOccupied(GridElement cell)
     {

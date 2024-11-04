@@ -4,11 +4,14 @@ public class GridElement : MonoBehaviour
 {
     public Vector2Int ElementCoordinate;
     public Vector3 GridSize;
-    public Card CardInCell;
+
+    public bool isOccupied = false; // Czy komórka jest zajęta czy nie
+    public bool isTargeted = false; //Czy jest nad nia myszka
+    public Card CardInCell = null;
 
     public void SetUp()
     {
-        GridSize = transform.lossyScale * 10;
+        GridSize = transform.localScale * 10;
     }
 
     public void SetUpCoordinate(int x, int y)
