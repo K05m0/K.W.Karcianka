@@ -8,7 +8,6 @@ public class WaveConfig
     public int turnToPrepare;
     public bool spawnImmediately;
     public bool SpawnNow;
-    public bool IsWaveComplete = false; // Flaga informująca, czy fala jest zakończona
 
     public WaveConfig(string waveName, List<Card> enemiesToSpawn, int turnToPrepare, bool spawnImmediately)
     {
