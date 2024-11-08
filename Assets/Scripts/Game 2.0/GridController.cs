@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [ExecuteInEditMode]  // Sprawia, że skrypt działa także w trybie edycji
@@ -22,6 +23,12 @@ public class GridController : MonoBehaviour
     private float lastCellHeight;
     private bool needsRefresh = false;  // Flaga do opóźnienia odświeżania
 
+    [Header("Place")]
+    public List<Vector2Int> avaibleGridCellForPlayer = new List<Vector2Int>();
+    [SerializeField] private Color hightLightColor;
+    [SerializeField] private Color normalColor;
+    [SerializeField] private Color disableColor;
+
 
     void OnValidate()
     {
@@ -29,6 +36,19 @@ public class GridController : MonoBehaviour
         {
             // Ustaw flagę, że grid wymaga odświeżenia, ale nie rób tego od razu
             needsRefresh = true;
+        }
+    }
+
+    private void Awake()
+    {
+        if (needsRefresh ||
+        GridWidth != lastGridWidth ||
+        GridHeight != lastGridHeight ||
+        CellWidthOffset != lastCellWidth ||
+        CellHeightOffset != lastCellHeight)
+        {
+            RefreshGrid();
+            needsRefresh = false;  // Resetujemy flagę po odświeżeniu
         }
     }
 
@@ -81,7 +101,6 @@ public class GridController : MonoBehaviour
                                                    startPosition.y,
                                                    startPosition.z + ((cell.GridSize.z + CellHeightOffset) * y));
 
-                Debug.Log($"Cell nr{x} {y} position: {cellPosition}");
                 cell.gameObject.transform.localPosition = cellPosition;
                 cell.transform.rotation = Quaternion.identity;
                 cell.SetUpCoordinate(x, y);
@@ -187,4 +206,54 @@ public class GridController : MonoBehaviour
 
         return GridCoordinate[x, y]; // Zwróć odpowiednią komórkę
     }
+    public void HightlightGrid(Component sender, object data)
+    {
+        if (sender is not Card element)
+            return;
+        if (data is not bool isCliced)
+            return;
+
+
+        // Najpierw znajdź elementy, które mają koordynaty zgodne z `avaibleGridCellForPlayer`
+        // Zamiana GridCoordinate na listę jednowymiarową
+        var allCells = GridCoordinate.Cast<GridElement>().ToList();
+
+        // Filtruj elementy, które mają koordynaty zgodne z avaibleGridCellForPlayer
+        var matchingCells = allCells
+            .Where(cell => avaibleGridCellForPlayer.Any(x => x.x == cell.ElementCoordinate.x && x.y == cell.ElementCoordinate.y))
+            .ToList();
+
+        // Elementy, których koordynaty się nie pokrywają
+        var nonMatchingCells = allCells.Except(matchingCells).ToList();
+
+        // Przetwarzanie elementów, których koordynaty się pokrywają
+        foreach (var cell in matchingCells)
+        {
+            var renderer = cell.gameObject.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material.color = isCliced ?  hightLightColor : normalColor;
+            }
+        }
+
+        foreach (var cell in nonMatchingCells)
+        {
+            var renderer = cell.gameObject.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material.color = isCliced ?  disableColor : normalColor;
+            }
+        }
+
+    }
 }
+/*            var disableGridCell = avaibleGridCellForPlayer.FirstOrDefault(x => x.x != cell.ElementCoordinate.x || x.y != cell.ElementCoordinate.y);
+*/
+/*            else if (disableGridCell != null)
+            {
+                var renderer = cell.gameObject.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.color = isCliced ? disableColor : normalColor;
+                }
+            }*/

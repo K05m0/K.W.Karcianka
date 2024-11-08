@@ -6,6 +6,7 @@ using UnityEngine.VFX;
 using UnityEngine.WSA;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using System.Linq;
 
 [System.Serializable]
 public class Card : MonoBehaviour
@@ -16,7 +17,8 @@ public class Card : MonoBehaviour
     public bool OnBoard;
     public bool IsCliced;
 
-    private GridController Controller;
+    private GridController gridController;
+    private NewPlayerController playerController;
 
     [Header("Stats")]
     public int Speed;
@@ -30,6 +32,7 @@ public class Card : MonoBehaviour
     private Transform handPos;
     private Vector3 showCardPosition;
     private Vector3 initialPosition;
+    [SerializeField] private Vector3 placeOffset;
 
     [Header("Drag")]
     [SerializeField] private LayerMask cardLayer;
@@ -37,18 +40,24 @@ public class Card : MonoBehaviour
     private Vector3 offset;
     private GridElement holder = null;
     Vector3 originalSize;
+    Vector3 placeScale;
 
-    public virtual void SetUpCard(GridController controller, CardType type = CardType.Player, Transform handTransform = null)
+    [SerializeField] private GameEvent hoverCardEvent;
+
+    public virtual void SetUpCard(GridController gridController, NewPlayerController playerController, CardType type = CardType.Player, Transform handTransform = null)
     {
         //reference
-        Controller = controller;
+        this.gridController = gridController;
         handPos = handTransform;
+        this.playerController = playerController;
         //pos
         transform.SetParent(handPos, false);
         transform.localPosition = Vector3.zero;
         initialPosition = transform.position;
         originalSize = transform.localScale;
+        placeScale = originalSize * 0.7f;
         showCardPosition = initialPosition + (transform.forward * showOffset);
+
         //Stats
         Type = type;
         CurrHealth = MaxHealth;
@@ -58,6 +67,8 @@ public class Card : MonoBehaviour
     //CARD MOUSE LOGIC
     public void OnMouseEnter()
     {
+        if (Type == CardType.Enemy)
+            return;
         if (InDeck)
             return;
 
@@ -69,6 +80,9 @@ public class Card : MonoBehaviour
 
     public void OnMouseExit()
     {
+        if (Type == CardType.Enemy)
+            return;
+
         if (InDeck)
             return;
 
@@ -80,6 +94,9 @@ public class Card : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (Type == CardType.Enemy)
+            return;
+
         if (InDeck)
             return;
 
@@ -88,6 +105,7 @@ public class Card : MonoBehaviour
             return;
         }
         IsCliced = true;
+        hoverCardEvent.Raise(this, IsCliced);
 
         // Obliczamy offset
         zCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
@@ -96,16 +114,53 @@ public class Card : MonoBehaviour
 
     private void OnMouseUp()
     {
+        if (Type == CardType.Enemy)
+            return;
+
         if (InDeck)
             return;
 
-        BackCard();
+        if (holder == null)
+        {
+            BackCard();
+            hoverCardEvent.Raise(this, IsCliced);
+            return;
+        }
+
+        if(!PlaceCard(holder))
+            BackCard();
+
+        hoverCardEvent.Raise(this, IsCliced);
     }
 
-    private void PlaceCard()
+    public bool PlaceCard(GridElement selectedGrid)
     {
         if (InDeck)
-            return;
+            return false;
+        if (Type == CardType.Player)
+        {
+            if(!playerController.UseCard(this))
+            {
+                transform.SetParent(handPos);
+                transform.localScale = originalSize;
+                holder = null;
+                return false;
+            }
+            
+            transform.SetParent(selectedGrid.transform);
+            transform.rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f);
+            transform.localPosition = Vector3.zero + placeOffset;
+            transform.localScale = Vector3.one;
+            return true;
+        }
+        else
+        {
+            transform.SetParent(selectedGrid.transform);
+            transform.rotation = Quaternion.identity;
+            transform.localPosition = Vector3.zero - placeOffset;
+            transform.localScale = Vector3.one;
+            return true;
+        }
     }
     private void BackCard()
     {
@@ -137,24 +192,36 @@ public class Card : MonoBehaviour
 
             if (hit.collider.TryGetComponent<GridElement>(out var grid))
             {
-                transform.SetParent(grid.transform);
-                transform.localPosition = Vector3.zero;
-                transform.localScale = Vector3.one;
-                grid.isTargeted = true;
-                if (holder != null && holder != grid.gameObject)
+                var matchingCell = gridController.avaibleGridCellForPlayer.Any(x => x.x == grid.ElementCoordinate.x && x.y == grid.ElementCoordinate.y);
+                if (!matchingCell)
                 {
-                    /*holder.transform.GetChild(0).gameObject.SetActive(false);*/
+                    // Kod do obsługi braku dopasowania
+                    transform.SetParent(handPos);
+                    transform.localScale = originalSize;
+                    transform.position = hit.point + new Vector3(0, 0.01f, 0);
                     holder = null;
                 }
-                grid.transform.GetChild(0).gameObject.SetActive(true);
-                holder = grid;
-                return;
+                else
+                {
+                    transform.SetParent(grid.transform);
+                    transform.localPosition = Vector3.zero;
+                    transform.localScale = Vector3.one;
+                    grid.isTargeted = true;
+                    if (holder != null && holder != grid.gameObject)
+                    {
+                        holder = null;
+                    }
+                    grid.transform.GetChild(0).gameObject.SetActive(true);
+                    holder = grid;
+                    return;
+                }
             }
             else
             {
                 transform.SetParent(handPos);
                 transform.localScale = originalSize;
                 transform.position = hit.point + new Vector3(0, 0.01f, 0);
+                holder = null;
             }
         }
 

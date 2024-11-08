@@ -15,6 +15,7 @@ public class NewPlayerController : MonoBehaviour
     [Header("Card Draw")]
     public int StartCardAmount = 3;
     public List<Card> AllCardsInDeck = new List<Card>();
+    private Stack<Card> PhysicalDeck = new Stack<Card>(); // Stos fizycznych kart
 
     public Transform DeckPosition;  // Miejsce fizycznej talii
     public float CardStackOffset = 0.02f; // Odstęp między kartami w stosie
@@ -34,7 +35,7 @@ public class NewPlayerController : MonoBehaviour
     public Transform CoinParent;
     public TextMeshProUGUI coinText;
 
-    private Stack<Card> PhysicalDeck = new Stack<Card>(); // Stos fizycznych kart
+
 
     private void Awake()
     {
@@ -58,16 +59,7 @@ public class NewPlayerController : MonoBehaviour
         {
             UseMana(CurrAmountMana / 2);
         }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            var index = GetRandomNonNullIndex();
-            if (index != null)
-            {
-                var holder = CardInHand[index.Value];
-                UseCard(CardInHand[index.Value]);
-                DestroyImmediate(holder.gameObject);
-            }
-        }
+
     }
 
     public int? GetRandomNonNullIndex()
@@ -154,7 +146,7 @@ public class NewPlayerController : MonoBehaviour
             // Dodajemy OnComplete na zakończenie sekwencji
             sequence.OnComplete(() =>
             {
-                drawnCard.SetUpCard(Controller, Card.CardType.Player, CardSlots[i]);
+                drawnCard.SetUpCard(Controller,this, Card.CardType.Player, CardSlots[i]);
             });
 
             CardInHand[i] = drawnCard;
@@ -242,21 +234,22 @@ public class NewPlayerController : MonoBehaviour
     }
 
     //RemoveCardFromHand
-    public void UseCard(Card selectedCard)
+    public bool UseCard(Card selectedCard)
     {
         if (!CardInHand.Contains(selectedCard))
         {
             Debug.LogError("This card is not in hand");
-            return;
+            return false;
         }
 
         if (!UseMana(selectedCard.Cost))
         {
             Debug.LogError("This card is to expensive");
-            return;
+            return false;
         }
 
         int index = Array.IndexOf(CardInHand, selectedCard);
         CardInHand[index] = null;
+        return true;
     }
 }

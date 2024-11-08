@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6879152777516384146}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.06, y: 0.1, z: 0.08}
   m_ConstrainProportionsScale: 0
@@ -124,13 +124,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 1
+  InDeck: 1
   OnBoard: 0
   IsCliced: 0
+  Speed: 1
+  Cost: 2
+  MaxHealth: 4
+  CurrHealth: 4
   showOffset: -0.15
   showDuration: 1
+  placeOffset: {x: 0.8, y: 0, z: 0}
   cardLayer:
     serializedVersion: 2
     m_Bits: 64
+  hoverCardEvent: {fileID: 11400000, guid: 852e83907965b35438889fcac4973dd2, type: 2}
 --- !u!1 &7663652581415255384
 GameObject:
   m_ObjectHideFlags: 0

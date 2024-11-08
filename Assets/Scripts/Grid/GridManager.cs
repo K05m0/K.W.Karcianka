@@ -10,7 +10,7 @@ public class GridManager : MonoBehaviour
     public float cellWidth = 1.0f;   // Szerokość komórki
     public float cellHeight = 1.0f;  // Wysokość komórki
 
-    private GridCell[,] gridCells;
+    public GridElement[,] gridCells;
     private int lastGridWidth;
     private int lastGridHeight;
     private float lastCellWidth;
@@ -59,7 +59,7 @@ public class GridManager : MonoBehaviour
             ClearGrid();
         }
 
-        gridCells = new GridCell[gridWidth, gridHeight];
+        gridCells = new GridElement[gridWidth, gridHeight];
 
         Vector3 startPosition = transform.position;  // Pobieramy pozycję startową z obiektu, który posiada tę klasę
 
@@ -70,8 +70,9 @@ public class GridManager : MonoBehaviour
                 // Ustawiamy pozycję każdej komórki bazując na pozycji obiektu z GridManager i rozmiarach komórek
                 Vector3 cellPosition = new Vector3(startPosition.x + x * cellWidth, startPosition.y, startPosition.z + y * cellHeight);
                 GameObject cell = Instantiate(gridCellPrefab, cellPosition, Quaternion.identity, this.transform); // Dodajemy nowo wygenerowane komórki jako dzieci obiektu GridManager
-                GridCell gridCell = cell.GetComponent<GridCell>();
-                gridCell.SetCoordinates(x, y);
+                GridElement gridCell = cell.GetComponent<GridElement>();
+                gridCell.SetUp();
+                gridCell.SetUpCoordinate(x, y);
                 gridCells[x, y] = gridCell;
             }
         }
@@ -108,18 +109,17 @@ public class GridManager : MonoBehaviour
     }
 
     // Metoda, która zwraca najbliższą komórkę gridu do danej pozycji
-    public GridCell GetNearestCell(Vector3 worldPosition)
+    public GridElement GetNearestCell(Vector3 worldPosition)
     {
         if (gridCells == null)
         {
-            Debug.LogWarning("Grid cells are not initialized. Please generate the grid first.");
             return null;
         }
 
         float closestDistance = 1f;
-        GridCell closestCell = null;
+        GridElement closestCell = null;
 
-        foreach (GridCell cell in gridCells)
+        foreach (GridElement cell in gridCells)
         {
             float distance = Vector3.Distance(cell.transform.position, worldPosition);
             if (distance < closestDistance)
@@ -132,11 +132,10 @@ public class GridManager : MonoBehaviour
         return closestCell;
     }
 
-    public GridCell GetCell(int x, int y)
+    public GridElement GetCell(int x, int y)
     {
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
         {
-            Debug.LogWarning("Requested cell is out of bounds.");
             return null; // Zwróć null, jeśli współrzędne są poza zakresem
         }
 
@@ -148,7 +147,6 @@ public class GridManager : MonoBehaviour
     {
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
         {
-            Debug.LogWarning("Requested cell is out of bounds.");
             return false; // Zwróć false, jeśli współrzędne są poza zakresem
         }
 
@@ -162,13 +160,11 @@ public class GridManager : MonoBehaviour
     {
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
         {
-            Debug.LogWarning("Requested cell is out of bounds.");
             return null; // Zwróć false, jeśli współrzędne są poza zakresem
         }
 
         if(gridCells[x, y].CardInCell == null)
         {
-            Debug.Log("Requested cell is empty");
             return null;
         }
 

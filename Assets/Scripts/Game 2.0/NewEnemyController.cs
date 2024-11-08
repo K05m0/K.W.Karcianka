@@ -7,7 +7,7 @@ public class NewEnemyController : MonoBehaviour
 {
     public List<PreparePosition> positionToPrepare;
 
-    [SerializeField] private GridManager gridManager;
+    [SerializeField] private GridController gridManager;
     [SerializeField] private List<WaveConfig> waves;
 
     public List<Card> PreperedCard = new List<Card>();
@@ -15,16 +15,15 @@ public class NewEnemyController : MonoBehaviour
 
     public int currentWaveIndex = 0;
 
-    private void Awake()
+    private void Start()
     {
-        SpawnPreperedCard(waves[0].enemiesToSpawn);
+        PrepareNextWave(0);
     }
 
     public void PrepareNextWave(int currentWaveIndex)
     {
         if (currentWaveIndex > waves.Count - 1)
         {
-            Debug.LogError($"currente wave is not implement, wave index: {currentWaveIndex}");
             return;
         }
 
@@ -48,7 +47,6 @@ public class NewEnemyController : MonoBehaviour
         for (int i = 0; i <= positionToPrepare.Count - 1; i++)
         {
             availablePosition.Add(i);
-            Debug.Log($"avaible position {availablePosition[i]}");
         }
         foreach (var card in enemiesToSpawn)
         {
@@ -57,15 +55,14 @@ public class NewEnemyController : MonoBehaviour
                 int randomIndex = random.Next(availablePosition.Count); // Losowanie indeksu
                 int selectedPosition = availablePosition[randomIndex]; // Wybór pozycji
                 availablePosition.RemoveAt(randomIndex); // Usunięcie wybranej pozycji z listy
-
-                positionToPrepare[selectedPosition].CardOnPosition = card;
-                Instantiate(card,positionToPrepare[selectedPosition].Position);
+                var cardObj = Instantiate(card, positionToPrepare[selectedPosition].Position);
+                cardObj.SetUpCard(gridManager, null, Card.CardType.Enemy);
+                positionToPrepare[selectedPosition].CardOnPosition = cardObj;
                 card.transform.position = Vector3.zero;
                 card.transform.rotation = Quaternion.identity;
             }
             else
             {
-                Debug.Log("No available positions left.");
                 break; // Opcjonalne: przerwanie, gdy nie ma więcej dostępnych pozycji
             }
         }
@@ -73,7 +70,14 @@ public class NewEnemyController : MonoBehaviour
 
     public void PlacePreperedCardOnBoard()
     {
-
+        for (int i = 0; i < positionToPrepare.Count; i++)
+        {
+            if (positionToPrepare[i].CardOnPosition == null)
+                continue;
+            GridElement gridElement = gridManager.GridCoordinate[i, gridManager.GridHeight - 1];
+            positionToPrepare[i].CardOnPosition.PlaceCard(gridElement);
+            Debug.Log(gridElement.ElementCoordinate);
+        }
     }
 }
 

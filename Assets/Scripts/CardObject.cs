@@ -21,7 +21,7 @@ public class CardObject : MonoBehaviour
         {
             y = gridManager.gridHeight - 1;
         }
-        GridCell targetCell = gridManager.GetCell(x, y);
+        GridElement targetCell = gridManager.GetCell(x, y);
 
         if (targetCell != null && !targetCell.isOccupied)
         {
